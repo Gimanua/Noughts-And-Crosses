@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Noughts_And_Crosses
 {
@@ -11,6 +14,9 @@ namespace Noughts_And_Crosses
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        public static ContentManager Content;
+        public static Point WindowMiddle { get; private set; }
+        public static readonly Dictionary<Enum, Texture2D> Textures = new Dictionary<Enum, Texture2D>();
 
         public Game1()
         {
@@ -27,7 +33,7 @@ namespace Noughts_And_Crosses
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            WindowMiddle = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
             base.Initialize();
         }
 
