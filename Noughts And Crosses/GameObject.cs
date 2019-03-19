@@ -16,8 +16,6 @@
             Position = position;
         }
 
-        public abstract void Update();
-
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Bounds, Color.White);

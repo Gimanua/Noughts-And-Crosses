@@ -16,8 +16,8 @@ namespace Noughts_And_Crosses
 
         static Mark()
         {
-            Game1.Textures.Add(MarkType.Cross, Game1.Content.Load<Texture2D>(""));
-            Game1.Textures.Add(MarkType.Nought, Game1.Content.Load<Texture2D>(""));
+            Game1.Textures.Add(MarkType.Cross, Game1.Content.Load<Texture2D>("Marks/cross"));
+            Game1.Textures.Add(MarkType.Nought, Game1.Content.Load<Texture2D>("Marks/nought"));
         }
 
         private Mark(Rectangle bounds, Texture2D texture, LogicalPosition position, MarkType type) : base(bounds, texture, position)
@@ -38,10 +38,6 @@ namespace Noughts_And_Crosses
             Cross,
             Nought
         }
-
-        public override void Update()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
