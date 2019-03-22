@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
+using Noughts_And_Crosses.API;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 
@@ -12,15 +15,27 @@ namespace Noughts_And_Crosses
     /// </summary>
     public class Game1 : Game
     {
+        private const string QuoteUrl = "https://quotes.rest/qod.json";
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont spriteFont;
         public static ContentManager Content;
         public static Point WindowMiddle { get; private set; }
         public static readonly Dictionary<Enum, Texture2D> Textures = new Dictionary<Enum, Texture2D>();
+        private static RestClient RestClient = new RestClient(QuoteUrl);
+        private static string Quote;
+        private GameState gameState = GameState.Menu;
+
+        private enum GameState
+        {
+            Ingame,
+            Menu
+        }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            Content = base.Content;
             Content.RootDirectory = "Content";
         }
 
@@ -34,6 +49,20 @@ namespace Noughts_And_Crosses
         {
             // TODO: Add your initialization logic here
             WindowMiddle = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+            try
+            {
+                var request = new RestRequest("/", Method.GET);
+                IRestResponse response = RestClient.Execute(request);
+                string content = response.Content;
+                RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(content);
+                Quote = rootObject.contents.quotes[0].quote;
+            }
+            catch
+            {
+
+            }
+            
+
             base.Initialize();
         }
 
@@ -45,7 +74,7 @@ namespace Noughts_And_Crosses
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            spriteFont = Content.Load<SpriteFont>("standard");
             // TODO: use this.Content to load your game content here
         }
 
@@ -81,7 +110,15 @@ namespace Noughts_And_Crosses
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            if(gameState == GameState.Menu && !string.IsNullOrEmpty(Quote))
+            {
+                spriteBatch.DrawString(spriteFont, Quote, new Vector2(0, 0), Color.White);
+            }
+
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
