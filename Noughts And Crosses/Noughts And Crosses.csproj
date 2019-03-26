@@ -42,6 +42,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
+    <Compile Include="Actions\Meditate.cs" />
+    <Compile Include="Actions\Spell.cs" />
+    <Compile Include="Actions\Spells\Armageddon.cs" />
+    <Compile Include="Actions\Spells\Destroyer.cs" />
+    <Compile Include="Actions\Spells\Explosion.cs" />
+    <Compile Include="Actions\Trap.cs" />
+    <Compile Include="Actions\Wait.cs" />
     <Compile Include="API\Contents.cs" />
     <Compile Include="API\Quote.cs" />
     <Compile Include="API\RootObject.cs" />

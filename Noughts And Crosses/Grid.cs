@@ -10,10 +10,6 @@ namespace Noughts_And_Crosses
 {
     sealed class Grid : GameObject
     {
-        public static readonly int Width;
-        public static readonly int HalfWidth;
-        public static readonly int Height;
-        public static readonly int HalfHeight;
         private Mark Mark;
         
         public Grid(Rectangle bounds, Texture2D texture, LogicalPosition position) : base(bounds, texture, position)
@@ -21,5 +17,25 @@ namespace Noughts_And_Crosses
 
         }
 
+        static Grid()
+        {
+            Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("grid"));
+            SideLength = Game1.WindowMiddle.X / 10;
+        }
+
+        public enum TextureType
+        {
+            Standard
+        }
+
+        public static int SideLength { get; private set; }
+        public static int MiddleLeft { get; private set; } = Game1.WindowMiddle.X - HalfSideLength;
+        public static int MiddleTop { get; private set; } = Game1.WindowMiddle.Y - HalfSideLength;
+        private static int HalfSideLength { get; set; } = SideLength / 2;
+
+        public static Grid CreateGrid(LogicalPosition position)
+        {
+            return new Grid()
+        }
     }
 }
