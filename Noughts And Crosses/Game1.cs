@@ -25,6 +25,7 @@ namespace Noughts_And_Crosses
         private static RestClient RestClient = new RestClient(QuoteUrl);
         private static string Quote;
         private GameState gameState = GameState.Menu;
+        private PlayField PlayField { get; set; }
 
         private enum GameState
         {
@@ -49,6 +50,8 @@ namespace Noughts_And_Crosses
         {
             // TODO: Add your initialization logic here
             WindowMiddle = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+            IsMouseVisible = true;
+            /*
             try
             {
                 var request = new RestRequest("/", Method.GET);
@@ -61,7 +64,8 @@ namespace Noughts_And_Crosses
             {
 
             }
-            
+            */
+            PlayField = new PlayField(PlayField.GameMode.Normal);
 
             base.Initialize();
         }
@@ -98,7 +102,7 @@ namespace Noughts_And_Crosses
                 Exit();
 
             // TODO: Add your update logic here
-
+            PlayField.Update(Mouse.GetState());
             base.Update(gameTime);
         }
 
@@ -116,7 +120,7 @@ namespace Noughts_And_Crosses
             {
                 spriteBatch.DrawString(spriteFont, Quote, new Vector2(0, 0), Color.White);
             }
-
+            PlayField.Draw(spriteBatch);
 
             spriteBatch.End();
 

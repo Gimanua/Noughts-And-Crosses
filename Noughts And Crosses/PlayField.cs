@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Noughts_And_Crosses
+﻿namespace Noughts_And_Crosses
 {
-    class PlayField
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
+    using System.Collections.Generic;
+
+    sealed class PlayField
     {
+        private Mark.MarkType CurrentMark { get; set; } = Mark.MarkType.Cross;
+
         public PlayField(GameMode gameMode)
         {
             Mode = gameMode;
-            for(short x = -10; x <= 10; x++)
+            for(int x = -10; x <= 10; x++)
             {
-                for(short y = -10; y <= 10; y++)
+                for(int y = -10; y <= 10; y++)
                 {
-                    Grids.Add(new GameObject.LogicalPosition(x, y), new Grid())
+                    GameObject.LogicalPosition position = new GameObject.LogicalPosition(x, y);
+                    Grids.Add(position, new Grid(position));
                 }
             }
         }
 
-        public Dictionary<GameObject.LogicalPosition, Grid> Grids { get; }
+        public Dictionary<GameObject.LogicalPosition, Grid> Grids { get; } = new Dictionary<GameObject.LogicalPosition, Grid>();
         public GameMode Mode { get; }
 
         public enum GameMode
@@ -29,16 +30,23 @@ namespace Noughts_And_Crosses
             Special
         }
 
-        public void Update()
+        public void Update(MouseState mouseState)
         {
+            if(mouseState.LeftButton == ButtonState.Pressed)
+            {
+                GameObject.LogicalPosition logicalPosition = GameObject.LogicalPosition.GetLogicalPosition(mouseState.Position);
+                if (Grids.TryGetValue(logicalPosition, out Grid grid))
+                    grid.PlaceMark(new Mark(logicalPosition, CurrentMark));
+            }
 
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
-
+            foreach(Grid grid in Grids.Values)
+            {
+                grid.Draw(spriteBatch);
+            }
         }
-
-        
     }
 }

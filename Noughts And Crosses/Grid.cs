@@ -12,7 +12,7 @@ namespace Noughts_And_Crosses
     {
         private Mark Mark;
         
-        public Grid(Rectangle bounds, Texture2D texture, LogicalPosition position) : base(bounds, texture, position)
+        public Grid(LogicalPosition position) : base(position)
         {
 
         }
@@ -32,10 +32,21 @@ namespace Noughts_And_Crosses
         public static int MiddleLeft { get; private set; } = Game1.WindowMiddle.X - HalfSideLength;
         public static int MiddleTop { get; private set; } = Game1.WindowMiddle.Y - HalfSideLength;
         private static int HalfSideLength { get; set; } = SideLength / 2;
-
-        public static Grid CreateGrid(LogicalPosition position)
+        
+        public void PlaceMark(Mark mark)
         {
-            return new Grid()
+            Mark = mark;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            Mark?.Draw(spriteBatch);
+        }
+
+        protected override Tuple<Texture2D, Rectangle> LoadGameObject(LogicalPosition position, params object[] extra)
+        {
+            return new Tuple<Texture2D, Rectangle>(Game1.Textures[TextureType.Standard], new Rectangle(MiddleLeft + position.X * SideLength, MiddleTop + position.Y * SideLength, SideLength, SideLength));
         }
     }
 }

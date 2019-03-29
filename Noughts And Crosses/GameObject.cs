@@ -2,6 +2,7 @@
 {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using System;
 
     abstract class GameObject
     {
@@ -9,27 +10,35 @@
         private readonly Texture2D Texture;
         private LogicalPosition Position { get; set; }
 
-        public GameObject(Rectangle bounds, Texture2D texture, LogicalPosition position)
+        public GameObject(LogicalPosition position, params object[] extra)
         {
-            Bounds = bounds;
-            Texture = texture;
+            Tuple<Texture2D, Rectangle> tuple = LoadGameObject(position, extra);
+            Texture = tuple.Item1;
+            Bounds = tuple.Item2;
             Position = position;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Bounds, Color.White);
         }
 
+        protected abstract Tuple<Texture2D, Rectangle> LoadGameObject(LogicalPosition position, params object[] extra);
+        
         public struct LogicalPosition
         {
-            public short X { get; set; }
-            public short Y { get; set; }
+            public int X { get; set; }
+            public int Y { get; set; }
 
-            public LogicalPosition(short x, short y)
+            public LogicalPosition(int x, int y)
             {
                 X = x;
                 Y = y;
+            }
+
+            public static LogicalPosition GetLogicalPosition(Point point)
+            {
+                return new LogicalPosition(point.X / Grid.SideLength - Grid.MiddleLeft / Grid.SideLength, point.Y / Grid.SideLength - Grid.MiddleTop / Grid.SideLength);
             }
         }
     }

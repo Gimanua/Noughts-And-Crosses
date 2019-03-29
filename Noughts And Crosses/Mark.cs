@@ -1,11 +1,12 @@
 ﻿namespace Noughts_And_Crosses
 {
+    using System;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
 
     sealed class Mark : GameObject
     {
-        private Mark(Rectangle bounds, Texture2D texture, LogicalPosition position, MarkType type) : base(bounds, texture, position)
+        public Mark(LogicalPosition position, MarkType type) : base(position, type)
         {
             Type = type;
         }
@@ -26,15 +27,13 @@
         public MarkType Type { get; }
         private static int SideLength { get; set; }
         //(Grid.SideLength - SideLength) / 2 ger offset vi vill ha inne i rutan. Grid.MiddleLeft är X-värdet på Grid(0,0)'s vänstra kant
-        private static int MiddleLeft { get; set; } = (Grid.SideLength - SideLength) / 2 + Grid.MiddleLeft;
-        private static int MiddleTop { get; set; } = (Grid.SideLength - SideLength) / 2 + Grid.MiddleTop;
+        private static int MiddleLeft { get; set; } = Grid.MiddleLeft + ((Grid.SideLength - SideLength) / 2);
+        private static int MiddleTop { get; set; } = Grid.MiddleTop + ((Grid.SideLength - SideLength) / 2);
         
-        public static Mark CreateMark(LogicalPosition position, MarkType type)
+        protected override Tuple<Texture2D, Rectangle> LoadGameObject(LogicalPosition position, params object[] extra)
         {
-            return new Mark(new Rectangle(
-                MiddleLeft + position.X * Grid.SideLength,
-                MiddleTop + position.Y * Grid.SideLength,
-                SideLength, SideLength), Game1.Textures[type], position, type);
+            MarkType type = (MarkType)extra[0];
+            return new Tuple<Texture2D, Rectangle>(Game1.Textures[type], new Rectangle(MiddleLeft + position.X * Grid.SideLength, MiddleTop + position.Y * Grid.SideLength,SideLength, SideLength));
         }
     }
 }
