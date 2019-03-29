@@ -10,7 +10,7 @@ namespace Noughts_And_Crosses
 {
     sealed class Grid : GameObject
     {
-        private Mark Mark;
+        public Mark Mark { get; set; }
         
         public Grid(LogicalPosition position) : base(position)
         {
@@ -21,6 +21,9 @@ namespace Noughts_And_Crosses
         {
             Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("grid"));
             SideLength = Game1.WindowMiddle.X / 10;
+            MiddleLeft = Game1.WindowMiddle.X - HalfSideLength;
+            MiddleTop = Game1.WindowMiddle.Y - HalfSideLength;
+            HalfSideLength = SideLength / 2;
         }
 
         public enum TextureType
@@ -29,14 +32,10 @@ namespace Noughts_And_Crosses
         }
 
         public static int SideLength { get; private set; }
-        public static int MiddleLeft { get; private set; } = Game1.WindowMiddle.X - HalfSideLength;
-        public static int MiddleTop { get; private set; } = Game1.WindowMiddle.Y - HalfSideLength;
-        private static int HalfSideLength { get; set; } = SideLength / 2;
+        public static int MiddleLeft { get; private set; }
+        public static int MiddleTop { get; private set; }
+        private static int HalfSideLength { get; set; }
         
-        public void PlaceMark(Mark mark)
-        {
-            Mark = mark;
-        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {

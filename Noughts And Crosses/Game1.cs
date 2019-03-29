@@ -48,7 +48,6 @@ namespace Noughts_And_Crosses
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             WindowMiddle = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
             IsMouseVisible = true;
             /*
@@ -65,6 +64,7 @@ namespace Noughts_And_Crosses
 
             }
             */
+            
             PlayField = new PlayField(PlayField.GameMode.Normal);
 
             base.Initialize();
@@ -76,10 +76,8 @@ namespace Noughts_And_Crosses
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            spriteFont = Content.Load<SpriteFont>("standard");
-            // TODO: use this.Content to load your game content here
+            // BUGGAD PÅ HEMDATOR, BORTTAGEN FÖR TILLFÄLLET spriteFont = Content.Load<SpriteFont>("standard");
         }
 
         /// <summary>
@@ -88,7 +86,7 @@ namespace Noughts_And_Crosses
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
         /// <summary>
@@ -100,8 +98,7 @@ namespace Noughts_And_Crosses
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
+            
             PlayField.Update(Mouse.GetState());
             base.Update(gameTime);
         }
