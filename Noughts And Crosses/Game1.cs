@@ -22,6 +22,7 @@ namespace Noughts_And_Crosses
         public static ContentManager Content;
         public static Point WindowMiddle { get; private set; }
         public static readonly Dictionary<Enum, Texture2D> Textures = new Dictionary<Enum, Texture2D>();
+        public static bool AlreadyPressing { get; private set; } = false;
         private static RestClient RestClient = new RestClient(QuoteUrl);
         private static string Quote;
         private GameState gameState = GameState.Menu;
@@ -98,8 +99,11 @@ namespace Noughts_And_Crosses
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
-            PlayField.Update(Mouse.GetState());
+
+            MouseState mouseState = Mouse.GetState();
+            PlayField.Update(mouseState);
+            AlreadyPressing = mouseState.LeftButton == ButtonState.Pressed;
+
             base.Update(gameTime);
         }
 
