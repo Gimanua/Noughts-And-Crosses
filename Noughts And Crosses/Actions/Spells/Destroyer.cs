@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noughts_And_Crosses.Actions.Spells
 {
-    sealed class Destroyer
+    sealed class Destroyer : Spell
     {
     }
 }

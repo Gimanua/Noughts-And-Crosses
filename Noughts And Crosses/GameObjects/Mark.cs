@@ -1,4 +1,4 @@
-﻿namespace Noughts_And_Crosses
+﻿namespace Noughts_And_Crosses.GameObjects
 {
     using System;
     using Microsoft.Xna.Framework;

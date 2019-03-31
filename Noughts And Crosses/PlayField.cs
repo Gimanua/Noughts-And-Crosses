@@ -2,10 +2,11 @@
 {
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Noughts_And_Crosses.GameObjects;
     using System.Collections.Generic;
     using System.Diagnostics;
     using static Noughts_And_Crosses.GameObject;
-    using static Noughts_And_Crosses.Mark;
+    using static Noughts_And_Crosses.GameObjects.Mark;
 
     sealed class PlayField
     {
@@ -23,7 +24,7 @@
 
         public Dictionary<LogicalPosition, Grid> Grids { get; private set; }
         public GameMode Mode { get; }
-        private MarkType CurrentMark { get; set; } = MarkType.Cross;
+        private MarkType CurrentMark { get; set; } = Game1.Random.Next(0,2) == 0 ? MarkType.Cross : MarkType.Nought;
 
         public void Update(MouseState mouseState)
         {

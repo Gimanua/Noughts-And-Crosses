@@ -2,6 +2,7 @@
 {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using Noughts_And_Crosses.GameObjects;
     using System;
 
     abstract class GameObject

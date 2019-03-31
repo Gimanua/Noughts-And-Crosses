@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noughts_And_Crosses.Actions.Spells
 {
-    sealed class Explosion
+    sealed class Explosion : Spell
     {
     }
 }

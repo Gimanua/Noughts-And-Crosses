@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noughts_And_Crosses.Actions
 {
-    sealed class Wait
+    sealed class Wait : Action
     {
     }
 }

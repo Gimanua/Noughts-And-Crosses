@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Noughts_And_Crosses.Actions
 {
-    abstract class Spell
+    abstract class Spell : Action
     {
     }
 }

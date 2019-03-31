@@ -49,3 +49,10 @@
 /processorParam:TextureFormat=Color
 /build:Marks/nought.png
 
+#begin standard.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:standard.spritefont
+

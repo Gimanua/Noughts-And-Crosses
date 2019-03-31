@@ -57,8 +57,8 @@
     <Compile Include="IClickable.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
-    <Compile Include="Grid.cs" />
-    <Compile Include="Mark.cs" />
+    <Compile Include="GameObjects\Grid.cs" />
+    <Compile Include="GameObjects\Mark.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayField.cs" />
     <Compile Include="Program.cs" />
