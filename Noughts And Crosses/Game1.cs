@@ -114,10 +114,9 @@ namespace Noughts_And_Crosses
             if (keyBoardState.IsKeyDown(Keys.Left))
                 CameraLocation = new Vector2(CameraLocation.X - 5, CameraLocation.Y);
 
-            PlayField.Update(mouseState);
+            PlayField.Update(mouseState, CameraLocation);
             AlreadyPressing = mouseState.LeftButton == ButtonState.Pressed;
             
-
             base.Update(gameTime);
         }
 
