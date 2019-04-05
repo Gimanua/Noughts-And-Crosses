@@ -6,7 +6,7 @@
 
     sealed class Mark : GameObject
     {
-        public Mark(LogicalPosition position, MarkType type) : base(position, type)
+        public Mark(LogicalPosition position, MarkType type) : base(GetInformation(position, type))
         {
             Type = type;
         }
@@ -32,10 +32,9 @@
         private static int MiddleLeft { get; set; }
         private static int MiddleTop { get; set; }
         
-        protected override Tuple<Texture2D, Rectangle> LoadGameObject(LogicalPosition position, params object[] extra)
+        private static Tuple<LogicalPosition, Texture2D, Rectangle> GetInformation(LogicalPosition position, MarkType type)
         {
-            MarkType type = (MarkType)extra[0];
-            return new Tuple<Texture2D, Rectangle>(Game1.Textures[type], new Rectangle(MiddleLeft + position.X * Grid.SideLength, MiddleTop + position.Y * Grid.SideLength,SideLength, SideLength));
+            return new Tuple<LogicalPosition, Texture2D, Rectangle>(position, Game1.Textures[type], new Rectangle(MiddleLeft + position.X * Grid.SideLength, MiddleTop + position.Y * Grid.SideLength, SideLength, SideLength));
         }
     }
 }

@@ -8,5 +8,13 @@ namespace Noughts_And_Crosses.Actions
 {
     abstract class Spell : Action
     {
+        public Spell(Player caster, byte manaCost)
+        {
+            Caster = caster;
+            ManaCost = manaCost;
+        }
+
+        protected Player Caster { get; }
+        protected byte ManaCost { get; }
     }
 }

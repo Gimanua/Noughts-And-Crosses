@@ -11,20 +11,17 @@
         private readonly Texture2D Texture;
         private LogicalPosition Position { get; set; }
 
-        public GameObject(LogicalPosition position, params object[] extra)
+        public GameObject(Tuple<LogicalPosition, Texture2D, Rectangle> information)
         {
-            Tuple<Texture2D, Rectangle> tuple = LoadGameObject(position, extra);
-            Texture = tuple.Item1;
-            Bounds = tuple.Item2;
-            Position = position;
+            Position = information.Item1;
+            Texture = information.Item2;
+            Bounds = information.Item3;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Bounds, Color.White);
         }
-
-        protected abstract Tuple<Texture2D, Rectangle> LoadGameObject(LogicalPosition position, params object[] extra);
         
         public struct LogicalPosition
         {
@@ -39,7 +36,8 @@
 
             public static LogicalPosition GetLogicalPosition(Point point)
             {
-                return new LogicalPosition(point.X / Grid.SideLength - Grid.MiddleLeft / Grid.SideLength, point.Y / Grid.SideLength - Grid.MiddleTop / Grid.SideLength);
+                //Kan inte med säkerhet säga varför -1 behövs på y.
+                return new LogicalPosition(point.X / Grid.SideLength - Grid.MiddleLeft / Grid.SideLength, point.Y / Grid.SideLength - Grid.MiddleTop / Grid.SideLength - 1);
             }
         }
     }

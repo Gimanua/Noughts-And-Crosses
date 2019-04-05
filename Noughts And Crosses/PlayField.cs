@@ -9,6 +9,7 @@
     using System;
     using static Noughts_And_Crosses.GameObject;
     using static Noughts_And_Crosses.GameObjects.Mark;
+    using Noughts_And_Crosses.Actions.Spells;
 
     sealed class PlayField
     {
@@ -33,7 +34,7 @@
         }
         
         public GameMode Mode { get; }
-        private Dictionary<LogicalPosition, Grid> Grids { get; set; }
+        public Dictionary<LogicalPosition, Grid> Grids { get; private set; }
         private MarkType CurrentMark { get; set; } = Game1.Random.Next(0,2) == 0 ? MarkType.Cross : MarkType.Nought;
         private LogicalPosition TopLeft { get; set; }
         private LogicalPosition BottomRight { get; set; }
@@ -42,6 +43,13 @@
 
         public void Update(MouseState mouseState, Vector2 cameraLocation)
         {
+            if(mouseState.MiddleButton == ButtonState.Pressed)
+            {
+                //Ska ändras
+                Explosion explosion = new Explosion(new Player(MarkType.Cross), 0, LogicalPosition.GetLogicalPosition(mouseState.Position + cameraLocation.ToPoint()));
+                explosion.Do();
+                return;
+            }
             if(mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing)
             {
                 LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mouseState.Position + cameraLocation.ToPoint());
@@ -58,12 +66,12 @@
                     if (logicalPosition.X - 5 <= TopLeft.X)
                         for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.X - TopLeft.X); i < countTo; i++) { AddGrids(Side.Left); }
                     else if (logicalPosition.X + 5 >= BottomRight.X)
-                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.X - TopLeft.X); i < countTo; i++) { AddGrids(Side.Right); }
+                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.X - BottomRight.X); i < countTo; i++) { AddGrids(Side.Right); }
 
                     if (logicalPosition.Y - 5 <= TopLeft.Y)
                         for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.Y - TopLeft.Y); i < countTo; i++) { AddGrids(Side.Up); }
                     else if (logicalPosition.Y + 5 >= BottomRight.Y)
-                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.Y - TopLeft.Y); i < countTo; i++) { AddGrids(Side.Down); }
+                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.Y - BottomRight.Y); i < countTo; i++) { AddGrids(Side.Down); }
 
                     if (CurrentMark == MarkType.Cross)
                         CurrentMark = MarkType.Nought;
@@ -105,14 +113,14 @@
                     x = BottomRight.X + 1;
                     y = TopLeft.Y;
                     yI = 1;
-                    TopLeft = new LogicalPosition(TopLeft.X - 1, TopLeft.Y);
+                    BottomRight = new LogicalPosition(BottomRight.X + 1, BottomRight.Y);
                     break;
                 case Side.Up:
                     countTo = Math.Abs(TopLeft.X) + BottomRight.X + 1;
                     x = TopLeft.X;
                     y = TopLeft.Y - 1;
                     xI = 1;
-                    BottomRight = new LogicalPosition(BottomRight.X, BottomRight.Y - 1);
+                    TopLeft = new LogicalPosition(TopLeft.X, TopLeft.Y - 1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(side));

@@ -10,6 +10,7 @@
         public Player(MarkType mark)
         {
             Mark = mark;
+            /*
             Actions = new List<Action>
             {
                 new Meditate(),
@@ -19,9 +20,11 @@
                 new Destroyer(),
                 new Armageddon()
             };
+            */
         }
 
         public MarkType Mark { get; }
-        public List<Action> Actions { get; private set; }
+        //public List<Action> Actions { get; private set; }
+        public uint Mana { get; set; }
     }
 }

@@ -8,7 +8,7 @@
     {
         public Mark Mark { get; set; }
         
-        public Grid(LogicalPosition position) : base(position)
+        public Grid(LogicalPosition position) : base(GetTuple(position))
         {
 
         }
@@ -39,9 +39,9 @@
             Mark?.Draw(spriteBatch);
         }
 
-        protected override Tuple<Texture2D, Rectangle> LoadGameObject(LogicalPosition position, params object[] extra)
+        private static Tuple<LogicalPosition, Texture2D, Rectangle> GetTuple(LogicalPosition position)
         {
-            return new Tuple<Texture2D, Rectangle>(Game1.Textures[TextureType.Standard], new Rectangle(MiddleLeft + position.X * SideLength, MiddleTop + position.Y * SideLength, SideLength, SideLength));
+            return new Tuple<LogicalPosition, Texture2D, Rectangle>(position, Game1.Textures[TextureType.Standard], new Rectangle(MiddleLeft + position.X * SideLength, MiddleTop + position.Y * SideLength, SideLength, SideLength));
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
+using Noughts_And_Crosses.Actions.Spells;
 using Noughts_And_Crosses.API;
 using RestSharp;
 using System;
