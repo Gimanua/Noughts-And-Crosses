@@ -37,11 +37,13 @@
         {
             base.Draw(spriteBatch);
             Mark?.Draw(spriteBatch);
+            spriteBatch.DrawString(Game1.SpriteFont, $"X:{Position.X}", new Vector2(Bounds.X + 2, Bounds.Y + 4), Color.DarkBlue);
+            spriteBatch.DrawString(Game1.SpriteFont, $"Y:{Position.Y}", new Vector2(Bounds.X + 2, Bounds.Y + 20), Color.DarkBlue);
         }
 
-        private static Tuple<LogicalPosition, Texture2D, Rectangle> GetTuple(LogicalPosition position)
+        private static (LogicalPosition position, Texture2D texture, Rectangle bounds) GetTuple(LogicalPosition position)
         {
-            return new Tuple<LogicalPosition, Texture2D, Rectangle>(position, Game1.Textures[TextureType.Standard], new Rectangle(MiddleLeft + position.X * SideLength, MiddleTop + position.Y * SideLength, SideLength, SideLength));
+            return (position: position, texture: Game1.Textures[TextureType.Standard], bounds: new Rectangle(MiddleLeft + position.X * SideLength, MiddleTop + position.Y * SideLength, SideLength, SideLength));
         }
     }
 }

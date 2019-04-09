@@ -46,13 +46,13 @@
             if(mouseState.MiddleButton == ButtonState.Pressed)
             {
                 //Ska ändras
-                Explosion explosion = new Explosion(new Player(MarkType.Cross), 0, LogicalPosition.GetLogicalPosition(mouseState.Position + cameraLocation.ToPoint()));
+                Explosion explosion = new Explosion(new Player(MarkType.Cross), 0, LogicalPosition.GetLogicalPosition(mouseState.Position,cameraLocation.ToPoint()));
                 explosion.Do();
                 return;
             }
             if(mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing)
             {
-                LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mouseState.Position + cameraLocation.ToPoint());
+                LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mouseState.Position , cameraLocation.ToPoint());
                 if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
                 {
                     grid.Mark = new Mark(logicalPosition, CurrentMark);

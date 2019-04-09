@@ -32,9 +32,9 @@
         private static int MiddleLeft { get; set; }
         private static int MiddleTop { get; set; }
         
-        private static Tuple<LogicalPosition, Texture2D, Rectangle> GetInformation(LogicalPosition position, MarkType type)
+        private static (LogicalPosition position, Texture2D texture, Rectangle bounds) GetInformation(LogicalPosition position, MarkType type)
         {
-            return new Tuple<LogicalPosition, Texture2D, Rectangle>(position, Game1.Textures[type], new Rectangle(MiddleLeft + position.X * Grid.SideLength, MiddleTop + position.Y * Grid.SideLength, SideLength, SideLength));
+            return (position: position, texture: Game1.Textures[type], bounds: new Rectangle(MiddleLeft + position.X * Grid.SideLength, MiddleTop + position.Y * Grid.SideLength, SideLength, SideLength));
         }
     }
 }

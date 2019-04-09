@@ -7,15 +7,15 @@
 
     abstract class GameObject
     {
-        private Rectangle Bounds { get; set; }
+        protected Rectangle Bounds { get; set; }
         private readonly Texture2D Texture;
-        private LogicalPosition Position { get; set; }
+        protected LogicalPosition Position { get; set; }
 
-        public GameObject(Tuple<LogicalPosition, Texture2D, Rectangle> information)
+        public GameObject((LogicalPosition position, Texture2D texture, Rectangle bounds) constructionInformation)
         {
-            Position = information.Item1;
-            Texture = information.Item2;
-            Bounds = information.Item3;
+            Position = constructionInformation.position;
+            Texture = constructionInformation.texture;
+            Bounds = constructionInformation.bounds;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -34,10 +34,14 @@
                 Y = y;
             }
 
-            public static LogicalPosition GetLogicalPosition(Point point)
+            public static LogicalPosition GetLogicalPosition(Point mousePoint, Point cameraPoint)
             {
+                Point combined = mousePoint + cameraPoint;
                 //Kan inte med säkerhet säga varför -1 behövs på y.
-                return new LogicalPosition(point.X / Grid.SideLength - Grid.MiddleLeft / Grid.SideLength, point.Y / Grid.SideLength - Grid.MiddleTop / Grid.SideLength - 1);
+                int x = combined.X / Grid.SideLength - Grid.MiddleLeft / Grid.SideLength;
+                int y = combined.Y / Grid.SideLength - Grid.MiddleTop / Grid.SideLength;
+                return new LogicalPosition(x, y);
+                //MiddleLeft + position.X * SideLength, MiddleTop + position.Y * SideLength, SideLength, SideLength
             }
         }
     }

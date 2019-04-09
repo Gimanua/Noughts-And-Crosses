@@ -19,10 +19,11 @@ namespace Noughts_And_Crosses
         private const string QuoteUrl = "https://quotes.rest/qod.json";
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        SpriteFont spriteFont;
+        MouseState MouseState;
         public static Random Random { get; } = new Random();
         public new static ContentManager Content { get; private set; }
         public static Point WindowMiddle { get; private set; }
+        public static SpriteFont SpriteFont { get; private set; }
         public static readonly Dictionary<Enum, Texture2D> Textures = new Dictionary<Enum, Texture2D>();
         public static bool AlreadyPressing { get; private set; } = false;
         private static RestClient RestClient = new RestClient(QuoteUrl);
@@ -82,7 +83,7 @@ namespace Noughts_And_Crosses
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            spriteFont = Content.Load<SpriteFont>("standard");
+            SpriteFont = Content.Load<SpriteFont>("standard");
         }
 
         /// <summary>
@@ -104,7 +105,7 @@ namespace Noughts_And_Crosses
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            MouseState mouseState = Mouse.GetState();
+            MouseState = Mouse.GetState();
             KeyboardState keyBoardState = Keyboard.GetState();
             if (keyBoardState.IsKeyDown(Keys.Down))
                 CameraLocation = new Vector2(CameraLocation.X, CameraLocation.Y + 5);
@@ -115,8 +116,8 @@ namespace Noughts_And_Crosses
             if (keyBoardState.IsKeyDown(Keys.Left))
                 CameraLocation = new Vector2(CameraLocation.X - 5, CameraLocation.Y);
 
-            PlayField.Update(mouseState, CameraLocation);
-            AlreadyPressing = mouseState.LeftButton == ButtonState.Pressed;
+            PlayField.Update(MouseState, CameraLocation);
+            AlreadyPressing = MouseState.LeftButton == ButtonState.Pressed;
             
             base.Update(gameTime);
         }
@@ -133,9 +134,18 @@ namespace Noughts_And_Crosses
 
             if(gameState == GameState.Menu && !string.IsNullOrEmpty(Quote))
             {
-                spriteBatch.DrawString(spriteFont, Quote, new Vector2(0, 0), Color.White);
+                spriteBatch.DrawString(SpriteFont, Quote, new Vector2(0, 0), Color.White);
             }
             PlayField.Draw(spriteBatch);
+            spriteBatch.End();
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(SpriteFont, $"MousePoint (X:{MouseState.Position.X},Y:{MouseState.Position.Y})", new Vector2(10, 10), Color.Red);
+            spriteBatch.DrawString(SpriteFont, $"CameraPoint (X:{CameraLocation.ToPoint().X},Y:{CameraLocation.ToPoint().Y})", new Vector2(10, 30), Color.Red);
+            spriteBatch.DrawString(SpriteFont, $"Combined (X:{(MouseState.Position + CameraLocation.ToPoint()).X},Y:{(MouseState.Position + CameraLocation.ToPoint()).Y})", new Vector2(10, 50), Color.Red);
+            var _temp = GameObject.LogicalPosition.GetLogicalPosition(MouseState.Position, CameraLocation.ToPoint());
+            spriteBatch.DrawString(SpriteFont, $"Function position (X:{_temp.X},Y:{_temp.Y})", new Vector2(10, 70), Color.Red);
 
             spriteBatch.End();
 
