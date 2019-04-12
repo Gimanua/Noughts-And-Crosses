@@ -1,4 +1,6 @@
-﻿using Noughts_And_Crosses.GameObjects;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Noughts_And_Crosses.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,44 +12,103 @@ namespace Noughts_And_Crosses.Actions.Spells
 {
     sealed class Explosion : Spell
     {
-        public Explosion(Player caster, byte manaCost, LogicalPosition position) : base(caster, manaCost)
+        private static readonly byte ManaCost = 0;
+
+        public Explosion(Player caster, LogicalPosition position) : base(caster, ManaCost)
         {
             Position = position;
         }
 
-        private LogicalPosition Position { get; }
-        private Dictionary<LogicalPosition, Grid> Grids { get; set; }
-
-        public override void Do()
+        static Explosion()
         {
+            Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("explosion"));
+        }
+
+        public enum TextureType
+        {
+            Standard
+        }
+
+        private TimeSpan ExplosionStart { get; set; } = TimeSpan.Zero;
+        private List<LogicalPosition> ExplosionPositions { get; set; } = new List<LogicalPosition>();
+        private Color MyColor { get; set; } = new Color(255, 255, 255, 0.3f);
+        private LogicalPosition Position { get; }
+        
+        public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
+
+        public void Update(GameTime gameTime)
+        {
+            if(ExplosionStart != TimeSpan.Zero)
+            {
+                double elapsedSeconds = (gameTime.TotalGameTime - ExplosionStart).TotalSeconds;
+
+                if (elapsedSeconds <= 0.15)
+                {
+                    MyColor = new Color(255, 255, 255, Math.Max((float)elapsedSeconds / 0.15f, 0.3f));
+                }
+                else if(elapsedSeconds > 1.1 && elapsedSeconds <= 4.5)
+                {
+                    int alpha = (int)(255 * (1 - elapsedSeconds / 3.4));
+                    if(alpha < 16)
+                    {
+                        ExplosionPositions.Clear();
+                        ExplosionStart = TimeSpan.Zero;
+                        return;
+                    }
+                    MyColor = new Color(255, 255, 255, alpha);
+                }
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach(LogicalPosition position in ExplosionPositions)
+            {
+                spriteBatch.Draw(Game1.Textures[TextureType.Standard], new Rectangle(Grid.MiddleLeft + position.X * Grid.SideLength, Grid.MiddleTop + position.Y * Grid.SideLength, Grid.SideLength, Grid.SideLength), MyColor);
+            }
+        }
+
+        public void Do(GameTime gameTime)
+        {
+            ExplosionStart = gameTime.TotalGameTime;
             HashSet<LogicalPosition> visited = new HashSet<LogicalPosition>();
             Queue<LogicalPosition> pending = new Queue<LogicalPosition>();
             pending.Enqueue(Position);
-
             
             while(Caster.Mana > 0 && pending.Count > 0)
             {
                 LogicalPosition current = pending.Dequeue();
                 Grids[current].Mark = null;
+                visited.Add(current);
+                ExplosionPositions.Add(current);
 
-                List<LogicalPosition> neighbors = GetNeighbors(current);
-                foreach(LogicalPosition neighbor in neighbors)
+                List<LogicalPosition> neighbors = GetNeighbors(current, visited);
+                for(int i = neighbors.Count - 1; i >= 0; i--)
                 {
-                    pending.Enqueue(neighbor);
+                    int randomPick = Game1.Random.Next(neighbors.Count);
+                    pending.Enqueue(neighbors[randomPick]);
+                    neighbors.RemoveAt(randomPick);
                 }
+
+                Caster.Mana -= 1;
             }
         }
         
-        private List<LogicalPosition> GetNeighbors(LogicalPosition from)
+        private List<LogicalPosition> GetNeighbors(LogicalPosition from, HashSet<LogicalPosition> visited)
         {
             List<LogicalPosition> NeighBors = new List<LogicalPosition>();
             LogicalPosition[] sides = { new LogicalPosition(from.X - 1, from.Y), new LogicalPosition(from.X, from.Y - 1) , new LogicalPosition(from.X + 1, from.Y), new LogicalPosition(from.X, from.Y + 1) };
             foreach(LogicalPosition position in sides)
             {
-                if (Grids.ContainsKey(position))
+                if (Grids.ContainsKey(position) && !visited.Contains(position))
                     NeighBors.Add(position);
             }
             return NeighBors;
+        }
+        
+        public override void Do()
+        {
+            throw new NotImplementedException();
         }
     }
 }

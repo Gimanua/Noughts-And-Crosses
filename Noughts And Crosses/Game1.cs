@@ -72,6 +72,7 @@ namespace Noughts_And_Crosses
             */
             
             PlayField = new PlayField(PlayField.GameMode.Normal);
+            Explosion.Grids = PlayField.Grids;
 
             base.Initialize();
         }
@@ -116,8 +117,9 @@ namespace Noughts_And_Crosses
             if (keyBoardState.IsKeyDown(Keys.Left))
                 CameraLocation = new Vector2(CameraLocation.X - 5, CameraLocation.Y);
 
-            PlayField.Update(MouseState, CameraLocation);
+            PlayField.Update(MouseState, CameraLocation, gameTime);
             AlreadyPressing = MouseState.LeftButton == ButtonState.Pressed;
+            AlreadyPressing = MouseState.MiddleButton == ButtonState.Pressed;
             
             base.Update(gameTime);
         }
@@ -139,15 +141,17 @@ namespace Noughts_And_Crosses
             PlayField.Draw(spriteBatch);
             spriteBatch.End();
 
-            spriteBatch.Begin();
+            #region DEBUG
+            //spriteBatch.Begin();
 
-            spriteBatch.DrawString(SpriteFont, $"MousePoint (X:{MouseState.Position.X},Y:{MouseState.Position.Y})", new Vector2(10, 10), Color.Red);
-            spriteBatch.DrawString(SpriteFont, $"CameraPoint (X:{CameraLocation.ToPoint().X},Y:{CameraLocation.ToPoint().Y})", new Vector2(10, 30), Color.Red);
-            spriteBatch.DrawString(SpriteFont, $"Combined (X:{(MouseState.Position + CameraLocation.ToPoint()).X},Y:{(MouseState.Position + CameraLocation.ToPoint()).Y})", new Vector2(10, 50), Color.Red);
-            var _temp = GameObject.LogicalPosition.GetLogicalPosition(MouseState.Position, CameraLocation.ToPoint());
-            spriteBatch.DrawString(SpriteFont, $"Function position (X:{_temp.X},Y:{_temp.Y})", new Vector2(10, 70), Color.Red);
+            //spriteBatch.DrawString(SpriteFont, $"MousePoint (X:{MouseState.Position.X},Y:{MouseState.Position.Y})", new Vector2(10, 10), Color.Red);
+            //spriteBatch.DrawString(SpriteFont, $"CameraPoint (X:{CameraLocation.ToPoint().X},Y:{CameraLocation.ToPoint().Y})", new Vector2(10, 30), Color.Red);
+            //spriteBatch.DrawString(SpriteFont, $"Combined (X:{(MouseState.Position + CameraLocation.ToPoint()).X},Y:{(MouseState.Position + CameraLocation.ToPoint()).Y})", new Vector2(10, 50), Color.Red);
+            //var _temp = GameObject.LogicalPosition.GetLogicalPosition(MouseState.Position, CameraLocation.ToPoint());
+            //spriteBatch.DrawString(SpriteFont, $"Function position (X:{_temp.X},Y:{_temp.Y})", new Vector2(10, 70), Color.Red);
 
-            spriteBatch.End();
+            //spriteBatch.End();
+            #endregion
 
             base.Draw(gameTime);
         }

@@ -37,8 +37,8 @@
         {
             base.Draw(spriteBatch);
             Mark?.Draw(spriteBatch);
-            spriteBatch.DrawString(Game1.SpriteFont, $"X:{Position.X}", new Vector2(Bounds.X + 2, Bounds.Y + 4), Color.DarkBlue);
-            spriteBatch.DrawString(Game1.SpriteFont, $"Y:{Position.Y}", new Vector2(Bounds.X + 2, Bounds.Y + 20), Color.DarkBlue);
+            //spriteBatch.DrawString(Game1.SpriteFont, $"X:{Position.X}", new Vector2(Bounds.X + 2, Bounds.Y + 4), Color.DarkBlue);
+            //spriteBatch.DrawString(Game1.SpriteFont, $"Y:{Position.Y}", new Vector2(Bounds.X + 2, Bounds.Y + 20), Color.DarkBlue);
         }
 
         private static (LogicalPosition position, Texture2D texture, Rectangle bounds) GetTuple(LogicalPosition position)

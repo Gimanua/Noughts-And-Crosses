@@ -38,16 +38,21 @@
         private MarkType CurrentMark { get; set; } = Game1.Random.Next(0,2) == 0 ? MarkType.Cross : MarkType.Nought;
         private LogicalPosition TopLeft { get; set; }
         private LogicalPosition BottomRight { get; set; }
+        private Player CrossPlayer { get; set; }
+        private Player NoughtPlayer { get; set; }
+
+        //TEST
+        private Explosion Explosion { get; set; }
 
         public Grid this[LogicalPosition logicalPosition] { get { return Grids[logicalPosition]; } }
 
-        public void Update(MouseState mouseState, Vector2 cameraLocation)
+        public void Update(MouseState mouseState, Vector2 cameraLocation, GameTime gameTime)
         {
-            if(mouseState.MiddleButton == ButtonState.Pressed)
+            if(mouseState.MiddleButton == ButtonState.Pressed && !Game1.AlreadyPressing)
             {
                 //Ska ändras
-                Explosion explosion = new Explosion(new Player(MarkType.Cross), 0, LogicalPosition.GetLogicalPosition(mouseState.Position,cameraLocation.ToPoint()));
-                explosion.Do();
+                Explosion = new Explosion(new Player(MarkType.Cross), 1, LogicalPosition.GetLogicalPosition(mouseState.Position,cameraLocation.ToPoint()));
+                Explosion.Do(gameTime);
                 return;
             }
             if(mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing)
@@ -79,6 +84,8 @@
                         CurrentMark = MarkType.Cross;
                 }
             }
+
+            Explosion?.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -87,6 +94,7 @@
             {
                 grid.Draw(spriteBatch);
             }
+            Explosion?.Draw(spriteBatch);
         }
 
         private void AddGrids(Side side)
