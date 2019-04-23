@@ -10,13 +10,13 @@ using static Noughts_And_Crosses.GameObject;
 
 namespace Noughts_And_Crosses.Actions.Spells
 {
-    sealed class Explosion : Spell
+    sealed class Explosion : Spell, IPlaceAble
     {
-        private static readonly byte ManaCost = 0;
+        private new const byte ManaCost = 0;
 
-        public Explosion(Player caster, LogicalPosition position) : base(caster, ManaCost)
+        public Explosion(Player caster) : base(caster, ManaCost)
         {
-            Position = position;
+
         }
 
         static Explosion()
@@ -32,7 +32,7 @@ namespace Noughts_And_Crosses.Actions.Spells
         private TimeSpan ExplosionStart { get; set; } = TimeSpan.Zero;
         private List<LogicalPosition> ExplosionPositions { get; set; } = new List<LogicalPosition>();
         private Color MyColor { get; set; } = new Color(255, 255, 255, 0.3f);
-        private LogicalPosition Position { get; }
+        private LogicalPosition Position { get; set; }
         
         public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
 
@@ -67,8 +67,8 @@ namespace Noughts_And_Crosses.Actions.Spells
                 spriteBatch.Draw(Game1.Textures[TextureType.Standard], new Rectangle(Grid.MiddleLeft + position.X * Grid.SideLength, Grid.MiddleTop + position.Y * Grid.SideLength, Grid.SideLength, Grid.SideLength), MyColor);
             }
         }
-
-        public void Do(GameTime gameTime)
+        
+        public void Activate(GameTime gameTime)
         {
             ExplosionStart = gameTime.TotalGameTime;
             HashSet<LogicalPosition> visited = new HashSet<LogicalPosition>();
@@ -92,6 +92,8 @@ namespace Noughts_And_Crosses.Actions.Spells
 
                 Caster.Mana -= 1;
             }
+            //Quickfix
+            Caster.Mana = 20;
         }
         
         private List<LogicalPosition> GetNeighbors(LogicalPosition from, HashSet<LogicalPosition> visited)
@@ -105,10 +107,10 @@ namespace Noughts_And_Crosses.Actions.Spells
             }
             return NeighBors;
         }
-        
-        public override void Do()
+
+        public void Place(LogicalPosition position)
         {
-            throw new NotImplementedException();
+            Position = position;
         }
     }
 }

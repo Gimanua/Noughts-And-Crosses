@@ -17,6 +17,15 @@
         {
             Mode = gameMode;
             GenerateGrids();
+            CrossPlayer = new Player(MarkType.Cross, gameMode, HandleMarkPlaced);
+            NoughtPlayer = new Player(MarkType.Nought, gameMode, HandleMarkPlaced);
+            CurrentPlayer = Game1.Random.Next(0, 2) == 0 ? CrossPlayer : NoughtPlayer;
+            Player.Grids = Grids;
+
+            if (gameMode == GameMode.Special)
+            {
+                Explosion.Grids = Grids;
+            }
         }
 
         public enum GameMode
@@ -35,57 +44,48 @@
         
         public GameMode Mode { get; }
         public Dictionary<LogicalPosition, Grid> Grids { get; private set; }
-        private MarkType CurrentMark { get; set; } = Game1.Random.Next(0,2) == 0 ? MarkType.Cross : MarkType.Nought;
+        //private MarkType CurrentMark { get; set; } = Game1.Random.Next(0,2) == 0 ? MarkType.Cross : MarkType.Nought;
         private LogicalPosition TopLeft { get; set; }
         private LogicalPosition BottomRight { get; set; }
         private Player CrossPlayer { get; set; }
         private Player NoughtPlayer { get; set; }
-
-        //TEST
-        private Explosion Explosion { get; set; }
-
+        private Player CurrentPlayer { get; set; }
+        
         public Grid this[LogicalPosition logicalPosition] { get { return Grids[logicalPosition]; } }
+
+        public void HandleMarkPlaced(MarkType mark, LogicalPosition position)
+        {
+            if (CheckForWin(position, mark))
+            {
+                //Detta är ju en lite sisådär lösning
+                Debug.WriteLine($"{mark} won!");
+                GenerateGrids();
+                Player.Grids = Grids;
+                if (Mode == GameMode.Special)
+                    Explosion.Grids = Grids;
+                //return;
+            }
+
+            if (position.X - 5 <= TopLeft.X)
+                for (int i = 0, countTo = 5 - Math.Abs(position.X - TopLeft.X); i < countTo; i++) { AddGrids(Side.Left); }
+            else if (position.X + 5 >= BottomRight.X)
+                for (int i = 0, countTo = 5 - Math.Abs(position.X - BottomRight.X); i < countTo; i++) { AddGrids(Side.Right); }
+
+            if (position.Y - 5 <= TopLeft.Y)
+                for (int i = 0, countTo = 5 - Math.Abs(position.Y - TopLeft.Y); i < countTo; i++) { AddGrids(Side.Up); }
+            else if (position.Y + 5 >= BottomRight.Y)
+                for (int i = 0, countTo = 5 - Math.Abs(position.Y - BottomRight.Y); i < countTo; i++) { AddGrids(Side.Down); }
+
+            if (CurrentPlayer.Equals(CrossPlayer))
+                CurrentPlayer = NoughtPlayer;
+            else
+                CurrentPlayer = CrossPlayer;
+        }
 
         public void Update(MouseState mouseState, Vector2 cameraLocation, GameTime gameTime)
         {
-            if(mouseState.MiddleButton == ButtonState.Pressed && !Game1.AlreadyPressing)
-            {
-                //Ska ändras
-                Explosion = new Explosion(new Player(MarkType.Cross), 1, LogicalPosition.GetLogicalPosition(mouseState.Position,cameraLocation.ToPoint()));
-                Explosion.Do(gameTime);
-                return;
-            }
-            if(mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing)
-            {
-                LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mouseState.Position , cameraLocation.ToPoint());
-                if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
-                {
-                    grid.Mark = new Mark(logicalPosition, CurrentMark);
-                    if (CheckForWin(logicalPosition, CurrentMark))
-                    {
-                        Debug.WriteLine($"{CurrentMark} won!");
-                        GenerateGrids();
-                        return;
-                    }
-                    
-                    if (logicalPosition.X - 5 <= TopLeft.X)
-                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.X - TopLeft.X); i < countTo; i++) { AddGrids(Side.Left); }
-                    else if (logicalPosition.X + 5 >= BottomRight.X)
-                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.X - BottomRight.X); i < countTo; i++) { AddGrids(Side.Right); }
-
-                    if (logicalPosition.Y - 5 <= TopLeft.Y)
-                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.Y - TopLeft.Y); i < countTo; i++) { AddGrids(Side.Up); }
-                    else if (logicalPosition.Y + 5 >= BottomRight.Y)
-                        for (int i = 0, countTo = 5 - Math.Abs(logicalPosition.Y - BottomRight.Y); i < countTo; i++) { AddGrids(Side.Down); }
-
-                    if (CurrentMark == MarkType.Cross)
-                        CurrentMark = MarkType.Nought;
-                    else
-                        CurrentMark = MarkType.Cross;
-                }
-            }
-
-            Explosion?.Update(gameTime);
+            Point combinedMouseCamera = mouseState.Position + cameraLocation.ToPoint();
+            CurrentPlayer.Update(combinedMouseCamera, gameTime, mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -94,7 +94,7 @@
             {
                 grid.Draw(spriteBatch);
             }
-            Explosion?.Draw(spriteBatch);
+            CurrentPlayer.Draw(spriteBatch);
         }
 
         private void AddGrids(Side side)

@@ -59,6 +59,7 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="GameObjects\Grid.cs" />
     <Compile Include="GameObjects\Mark.cs" />
+    <Compile Include="IPlaceAble.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayField.cs" />
     <Compile Include="Program.cs" />

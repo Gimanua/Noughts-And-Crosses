@@ -8,9 +8,11 @@ namespace Noughts_And_Crosses.Actions
 {
     sealed class Trap : Action
     {
+        /*
         public override void Do()
         {
             throw new NotImplementedException();
         }
+        */
     }
 }

@@ -119,7 +119,6 @@ namespace Noughts_And_Crosses
 
             PlayField.Update(MouseState, CameraLocation, gameTime);
             AlreadyPressing = MouseState.LeftButton == ButtonState.Pressed;
-            AlreadyPressing = MouseState.MiddleButton == ButtonState.Pressed;
             
             base.Update(gameTime);
         }

@@ -34,9 +34,8 @@
                 Y = y;
             }
 
-            public static LogicalPosition GetLogicalPosition(Point mousePoint, Point cameraPoint)
+            public static LogicalPosition GetLogicalPosition(Point combined)
             {
-                Point combined = mousePoint + cameraPoint;
                 double x = combined.X / (double)Grid.SideLength - Grid.MiddleLeft / (double)Grid.SideLength;
                 double y = combined.Y / (double)Grid.SideLength - Grid.MiddleTop / (double)Grid.SideLength;
                 return new LogicalPosition(x < 0 ? (int)x-1 : (int)x, y < 0 ? (int)y-1 : (int)y);

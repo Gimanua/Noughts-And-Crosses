@@ -8,9 +8,11 @@ namespace Noughts_And_Crosses.Actions
 {
     sealed class Wait : Action
     {
+        /*
         public override void Do()
         {
             throw new NotImplementedException();
         }
+        */
     }
 }

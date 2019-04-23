@@ -8,6 +8,6 @@
 
     abstract class Action
     {
-        public abstract void Do();
+        //public abstract void Activate();
     }
 }
