@@ -15,6 +15,7 @@
     {
         public Player(MarkType mark, GameMode mode, HandleMarkPlaced handleMarkPlaced)
         {
+            Mode = mode;
             Mark = mark;
             MarkPlaced += handleMarkPlaced;
             
@@ -50,7 +51,7 @@
 
             }
             //Om man klickar på en ruta med en Action
-            else if ((SelectedAction = Game1.Random.Next(0,2) == 0 ? new Explosion(this) : null) != null)
+            else if (false && (SelectedAction = Game1.Random.Next(0,2) == 0 ? new Explosion(this) : null) != null)
             {
                 //Test
                 Explosion explosion = SelectedAction as Explosion;
@@ -71,11 +72,18 @@
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            SelectedAction?.Draw(spriteBatch);
+            if(Mode == GameMode.Special)
+            {
+                foreach (Action action in Actions)
+                {
+                    action.Draw(spriteBatch);
+                }
+            }
             //Rita ut alla actions man kan välja
             //SpriteFont, skriv ut mana
         }
 
+        private GameMode Mode { get; }
         public MarkType Mark { get; }
         public List<Action> Actions { get; }
         //Tillfälligt

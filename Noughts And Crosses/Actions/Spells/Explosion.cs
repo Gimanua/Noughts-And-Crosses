@@ -14,7 +14,7 @@ namespace Noughts_And_Crosses.Actions.Spells
     {
         private new const byte ManaCost = 0;
 
-        public Explosion(Player caster) : base(caster, ManaCost)
+        public Explosion(Player caster) : base(caster, ManaCost, GetConstructionInformation())
         {
 
         }
@@ -60,8 +60,9 @@ namespace Noughts_And_Crosses.Actions.Spells
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
+            base.Draw(spriteBatch);
             foreach(LogicalPosition position in ExplosionPositions)
             {
                 spriteBatch.Draw(Game1.Textures[TextureType.Standard], new Rectangle(Grid.MiddleLeft + position.X * Grid.SideLength, Grid.MiddleTop + position.Y * Grid.SideLength, Grid.SideLength, Grid.SideLength), MyColor);
@@ -111,6 +112,13 @@ namespace Noughts_And_Crosses.Actions.Spells
         public void Place(LogicalPosition position)
         {
             Position = position;
+        }
+
+        private static (Rectangle bounds, Texture2D texture, Color color) GetConstructionInformation()
+        {
+            int width = Game1.Viewport.Width;
+            int height = Game1.Viewport.Height;
+            return (bounds: new Rectangle((int)(width * 0.50), (int)(height * 0.85), (int)(width * 0.1), (int)(height * 0.1)), texture: Game1.Textures[TextureType.Standard], color: new Color(255, 255, 255, 255));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +10,7 @@ namespace Noughts_And_Crosses.Actions
 {
     abstract class Spell : Action
     {
-        public Spell(Player caster, byte manaCost)
+        public Spell(Player caster, byte manaCost, (Rectangle bounds, Texture2D texture, Color color) constructionInformation) : base(constructionInformation)
         {
             Caster = caster;
             ManaCost = manaCost;

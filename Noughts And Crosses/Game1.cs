@@ -26,6 +26,7 @@ namespace Noughts_And_Crosses
         public static SpriteFont SpriteFont { get; private set; }
         public static readonly Dictionary<Enum, Texture2D> Textures = new Dictionary<Enum, Texture2D>();
         public static bool AlreadyPressing { get; private set; } = false;
+        public static Viewport Viewport { get; private set; }
         private static RestClient RestClient = new RestClient(QuoteUrl);
         private static string Quote;
         private GameState gameState = GameState.Menu;
@@ -55,6 +56,7 @@ namespace Noughts_And_Crosses
         protected override void Initialize()
         {
             WindowMiddle = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+            Viewport = GraphicsDevice.Viewport;
             IsMouseVisible = true;
             /*
             try
@@ -71,7 +73,7 @@ namespace Noughts_And_Crosses
             }
             */
             
-            PlayField = new PlayField(PlayField.GameMode.Normal);
+            PlayField = new PlayField(PlayField.GameMode.Special);
             Explosion.Grids = PlayField.Grids;
 
             base.Initialize();
