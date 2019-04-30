@@ -10,7 +10,7 @@ namespace Noughts_And_Crosses.Actions
 {
     sealed class Trap : Action
     {
-        public Trap() : base(GetConstructionInformation())
+        public Trap(ActionSelectedEventHandler actionSelectedEventHandler) : base(GetConstructionInformation(), actionSelectedEventHandler)
         {
 
         }
@@ -37,6 +37,11 @@ namespace Noughts_And_Crosses.Actions
             int width = Game1.Viewport.Width;
             int height = Game1.Viewport.Height;
             return (bounds: new Rectangle((int)(width * 0.20), (int)(height * 0.85), (int)(width * 0.1), (int)(height * 0.1)), texture: Game1.Textures[TextureType.Standard], color: new Color(255, 255, 255, 255));
+        }
+
+        public override void Activate()
+        {
+            throw new NotImplementedException();
         }
     }
 }

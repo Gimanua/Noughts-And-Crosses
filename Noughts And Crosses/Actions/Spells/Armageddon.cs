@@ -12,7 +12,7 @@ namespace Noughts_And_Crosses.Actions.Spells
     {
         private new const byte ManaCost = 15;
 
-        public Armageddon(Player caster) : base(caster, ManaCost, GetConstructionInformation())
+        public Armageddon(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
 
         }
@@ -39,6 +39,11 @@ namespace Noughts_And_Crosses.Actions.Spells
             int width = Game1.Viewport.Width;
             int height = Game1.Viewport.Height;
             return (bounds: new Rectangle((int)(width * 0.80), (int)(height * 0.85), (int)(width * 0.1), (int)(height * 0.1)), texture: Game1.Textures[TextureType.Standard], color: new Color(255, 255, 255, 255));
+        }
+
+        public override void Activate()
+        {
+            throw new NotImplementedException();
         }
     }
 }

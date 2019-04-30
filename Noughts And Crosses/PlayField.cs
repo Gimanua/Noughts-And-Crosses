@@ -49,7 +49,7 @@
         private LogicalPosition BottomRight { get; set; }
         private Player CrossPlayer { get; set; }
         private Player NoughtPlayer { get; set; }
-        private Player CurrentPlayer { get; set; }
+        public Player CurrentPlayer { get; private set; }
         
         public Grid this[LogicalPosition logicalPosition] { get { return Grids[logicalPosition]; } }
 
@@ -86,15 +86,17 @@
         {
             Point combinedMouseCamera = mouseState.Position + cameraLocation.ToPoint();
             CurrentPlayer.Update(combinedMouseCamera, gameTime, mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing);
+            if(mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing)
+                CurrentPlayer.StaticUpdate(mouseState.Position);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             foreach(Grid grid in Grids.Values)
             {
                 grid.Draw(spriteBatch);
             }
-            CurrentPlayer.Draw(spriteBatch);
+            CurrentPlayer.Draw(spriteBatch, spriteFont);
         }
 
         private void AddGrids(Side side)

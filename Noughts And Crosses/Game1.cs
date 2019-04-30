@@ -27,6 +27,7 @@ namespace Noughts_And_Crosses
         public static readonly Dictionary<Enum, Texture2D> Textures = new Dictionary<Enum, Texture2D>();
         public static bool AlreadyPressing { get; private set; } = false;
         public static Viewport Viewport { get; private set; }
+        public static GameTime GameTime { get; private set; }
         private static RestClient RestClient = new RestClient(QuoteUrl);
         private static string Quote;
         private GameState gameState = GameState.Menu;
@@ -108,6 +109,7 @@ namespace Noughts_And_Crosses
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            GameTime = gameTime;
             MouseState = Mouse.GetState();
             KeyboardState keyBoardState = Keyboard.GetState();
             if (keyBoardState.IsKeyDown(Keys.Down))
@@ -139,7 +141,11 @@ namespace Noughts_And_Crosses
             {
                 spriteBatch.DrawString(SpriteFont, Quote, new Vector2(0, 0), Color.White);
             }
-            PlayField.Draw(spriteBatch);
+            PlayField.Draw(spriteBatch, SpriteFont);
+            spriteBatch.End();
+
+            spriteBatch.Begin();
+            PlayField.CurrentPlayer.DrawStatic(spriteBatch, SpriteFont);
             spriteBatch.End();
 
             #region DEBUG

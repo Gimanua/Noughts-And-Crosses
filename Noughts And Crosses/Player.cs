@@ -23,12 +23,12 @@
             {
                 Actions = new List<Action>
                 {
-                    new Meditate(),
-                    new Trap(),
-                    new Wait(),
-                    new Explosion(this),
-                    new Destroyer(this),
-                    new Armageddon(this)
+                    new Meditate(HandleActionSelected),
+                    new Trap(HandleActionSelected),
+                    new Wait(HandleActionSelected),
+                    new Explosion(this, HandleActionSelected),
+                    new Destroyer(this, HandleActionSelected),
+                    new Armageddon(this, HandleActionSelected)
                 };
             }
         }
@@ -36,9 +36,16 @@
         public delegate void HandleMarkPlaced(MarkType mark, LogicalPosition position);
         public event HandleMarkPlaced MarkPlaced;
 
+        public void StaticUpdate(Point staticMousePosition)
+        {
+            foreach (Action action in Actions)
+            {
+                action.Update(staticMousePosition);
+            }
+        }
+
         public void Update(Point mousePosition, GameTime gameTime, bool clicking)
         {
-            SelectedAction?.Update(gameTime);
             LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mousePosition);
 
             //Quickfix
@@ -46,17 +53,10 @@
                 return;
 
             //Om man klickar på en spell/action, utför eller välj denna
+            
             if (false)
             {
 
-            }
-            //Om man klickar på en ruta med en Action
-            else if (false && (SelectedAction = Game1.Random.Next(0,2) == 0 ? new Explosion(this) : null) != null)
-            {
-                //Test
-                Explosion explosion = SelectedAction as Explosion;
-                explosion.Place(logicalPosition);
-                explosion.Activate(gameTime);
             }
             //Om man klickar på en ruta vanligt
             else
@@ -70,24 +70,40 @@
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             if(Mode == GameMode.Special)
             {
                 foreach (Action action in Actions)
                 {
-                    action.Draw(spriteBatch);
+                    action.Draw(spriteBatch, spriteFont);
                 }
             }
             //Rita ut alla actions man kan välja
             //SpriteFont, skriv ut mana
         }
 
+        public void DrawStatic(SpriteBatch spriteBatch, SpriteFont spriteFont)
+        {
+            foreach (Action action in Actions)
+            {
+                action.DrawIcon(spriteBatch, spriteFont);
+            }
+            spriteBatch.DrawString(spriteFont, $"Current mana: {Mana.ToString()}", new Vector2(10, 10), Color.BlueViolet);
+            spriteBatch.DrawString(spriteFont, $"Current player: {Mark.ToString()}", new Vector2(10, 30), Color.Red);
+            spriteBatch.DrawString(spriteFont, $"Selected action: { SelectedAction?.ToString() }", new Vector2(10, 50), Color.Bisque);
+        }
+
+        public void HandleActionSelected(Action selectedAction)
+        {
+            SelectedAction = selectedAction;
+        }
+
         private GameMode Mode { get; }
         public MarkType Mark { get; }
         public List<Action> Actions { get; }
         //Tillfälligt
-        private Explosion SelectedAction { get; set; }
+        private Action SelectedAction { get; set; }
         public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
         public uint Mana { get; set; } = 20;
     }

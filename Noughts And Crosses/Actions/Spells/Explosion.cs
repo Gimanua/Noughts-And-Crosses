@@ -14,7 +14,7 @@ namespace Noughts_And_Crosses.Actions.Spells
     {
         private new const byte ManaCost = 0;
 
-        public Explosion(Player caster) : base(caster, ManaCost, GetConstructionInformation())
+        public Explosion(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
 
         }
@@ -60,18 +60,17 @@ namespace Noughts_And_Crosses.Actions.Spells
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
-            base.Draw(spriteBatch);
             foreach(LogicalPosition position in ExplosionPositions)
             {
                 spriteBatch.Draw(Game1.Textures[TextureType.Standard], new Rectangle(Grid.MiddleLeft + position.X * Grid.SideLength, Grid.MiddleTop + position.Y * Grid.SideLength, Grid.SideLength, Grid.SideLength), MyColor);
             }
         }
         
-        public void Activate(GameTime gameTime)
+        public override void Activate()
         {
-            ExplosionStart = gameTime.TotalGameTime;
+            ExplosionStart = Game1.GameTime.TotalGameTime;
             HashSet<LogicalPosition> visited = new HashSet<LogicalPosition>();
             Queue<LogicalPosition> pending = new Queue<LogicalPosition>();
             pending.Enqueue(Position);
@@ -93,8 +92,6 @@ namespace Noughts_And_Crosses.Actions.Spells
 
                 Caster.Mana -= 1;
             }
-            //Quickfix
-            Caster.Mana = 20;
         }
         
         private List<LogicalPosition> GetNeighbors(LogicalPosition from, HashSet<LogicalPosition> visited)

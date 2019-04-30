@@ -10,21 +10,36 @@
 
     abstract class Action
     {
-        //public abstract void Activate();
-        private Rectangle Hitbox { get; set; }
+        public abstract void Activate();
+        protected Rectangle Hitbox { get; set; }
         private Texture2D Texture { get; set; }
         private Color Color { get; set; }
 
-        public Action((Rectangle hitbox, Texture2D texture, Color color) constructionInformation)
+        public delegate void ActionSelectedEventHandler(Action selectedAction);
+        public event ActionSelectedEventHandler ActionSelected;
+
+        public Action((Rectangle hitbox, Texture2D texture, Color color) constructionInformation, ActionSelectedEventHandler actionSelectedEventHandler)
         {
+            ActionSelected += actionSelectedEventHandler;
             Hitbox = constructionInformation.hitbox;
             Texture = constructionInformation.texture;
             Color = constructionInformation.color;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public void Update(Point mousePosition)
+        {
+            if (Hitbox.Contains(mousePosition))
+                Activate();
+        }
+
+        public virtual void DrawIcon(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             spriteBatch.Draw(Texture, Hitbox, Color);
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
+        {
+            return;
         }
     }
 }
