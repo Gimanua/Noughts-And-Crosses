@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace Noughts_And_Crosses.Actions
 {
-    sealed class Meditate : Action
+    sealed class Meditate : Spell
     {
-        public Meditate(ActionSelectedEventHandler actionSelectedEventHandler) : base(GetConstructionInformation(), actionSelectedEventHandler)
+        private new const byte ManaCost = 0;
+
+        public Meditate(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
 
         }
@@ -26,6 +28,8 @@ namespace Noughts_And_Crosses.Actions
             Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("meditate"));
         }
 
+        private uint TurnsInARow { get; set; } = 0;
+
         public enum TextureType
         {
             Standard
@@ -40,7 +44,7 @@ namespace Noughts_And_Crosses.Actions
 
         public override void Activate()
         {
-            throw new NotImplementedException();
+            Caster.Mana += ++TurnsInARow;
         }
     }
 }

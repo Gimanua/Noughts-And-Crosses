@@ -23,7 +23,7 @@
             {
                 Actions = new List<Action>
                 {
-                    new Meditate(HandleActionSelected),
+                    new Meditate(this, HandleActionSelected),
                     new Trap(HandleActionSelected),
                     new Wait(HandleActionSelected),
                     new Explosion(this, HandleActionSelected),

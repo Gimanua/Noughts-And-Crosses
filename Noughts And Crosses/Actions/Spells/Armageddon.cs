@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Noughts_And_Crosses.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Noughts_And_Crosses.GameObject;
 
 namespace Noughts_And_Crosses.Actions.Spells
 {
@@ -21,6 +23,8 @@ namespace Noughts_And_Crosses.Actions.Spells
         {
             Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("armageddon"));
         }
+
+        public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
 
         /*
         public override void Do()
@@ -43,7 +47,11 @@ namespace Noughts_And_Crosses.Actions.Spells
 
         public override void Activate()
         {
-            throw new NotImplementedException();
+            foreach(Grid grid in Grids.Values)
+            {
+                grid.Mark = null;
+            }
+            Caster.Mana -= ManaCost;
         }
     }
 }

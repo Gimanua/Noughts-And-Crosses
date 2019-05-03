@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
-    <Compile Include="Actions\Meditate.cs" />
+    <Compile Include="Actions\Spells\Meditate.cs" />
     <Compile Include="Actions\Spell.cs" />
     <Compile Include="Actions\Spells\Armageddon.cs" />
     <Compile Include="Actions\Spells\Destroyer.cs" />
