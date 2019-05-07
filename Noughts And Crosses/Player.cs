@@ -36,15 +36,19 @@
         public delegate void HandleMarkPlaced(MarkType mark, LogicalPosition position);
         public event HandleMarkPlaced MarkPlaced;
 
-        public void StaticUpdate(Point staticMousePosition)
-        {
-            foreach (Action action in Actions)
-            {
-                action.Update(staticMousePosition);
-            }
-        }
+        //public delegate void HandlePlayerTurnEnd(Player player);
+        //public event HandlePlayerTurnEnd PlayerTurnEnd;
 
-        public void Update(Point mousePosition, GameTime gameTime, bool clicking)
+        private GameMode Mode { get; }
+        public MarkType Mark { get; }
+        public List<Action> Actions { get; }
+        //Tillfälligt
+        public Action PreviousAction { get; private set; }
+        private Action SelectedAction { get; set; }
+        public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
+        public uint Mana { get; set; } = 20;
+        
+        public void Update(Point mousePosition, Point staticMousePosition, GameTime gameTime, bool clicking)
         {
             LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mousePosition);
 
@@ -52,22 +56,31 @@
             if (!clicking)
                 return;
 
-            //Om man klickar på en spell/action, utför eller välj denna
-            
-            if (false)
+            //Om man klickar på en ruta när man har en selected action.
+            if (SelectedAction != null)
             {
-
-            }
-            //Om man klickar på en ruta vanligt
-            else
-            {
-                
-                if(Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
+                if (SelectedAction is IPlaceAble)
                 {
-                    grid.Mark = new Mark(logicalPosition, Mark);
-                    MarkPlaced(Mark, logicalPosition);
+                    IPlaceAble placeAbleAction = SelectedAction as IPlaceAble;
+                    placeAbleAction.Place(logicalPosition);
                 }
+                SelectedAction.Activate();
+                SelectedAction = null;
+                //Avsluta ens tur
             }
+            else if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
+            {
+                grid.Mark = new Mark(logicalPosition, Mark);
+                MarkPlaced(Mark, logicalPosition);
+                //Avsluta ens tur
+            }
+
+            //Om man klickar på en spell/action, välj denna
+            foreach (Action action in Actions)
+            {
+                action.Update(staticMousePosition);
+            }
+            
         }
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
@@ -78,6 +91,7 @@
                 {
                     action.Draw(spriteBatch, spriteFont);
                 }
+                
             }
             //Rita ut alla actions man kan välja
             //SpriteFont, skriv ut mana
@@ -96,15 +110,12 @@
 
         public void HandleActionSelected(Action selectedAction)
         {
-            SelectedAction = selectedAction;
+            //Kolla så att man valt en ny action
+            if (!selectedAction.Equals(SelectedAction))
+                SelectedAction = selectedAction;
+            else
+                SelectedAction = null;
         }
-
-        private GameMode Mode { get; }
-        public MarkType Mark { get; }
-        public List<Action> Actions { get; }
-        //Tillfälligt
-        private Action SelectedAction { get; set; }
-        public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
-        public uint Mana { get; set; } = 20;
+        
     }
 }

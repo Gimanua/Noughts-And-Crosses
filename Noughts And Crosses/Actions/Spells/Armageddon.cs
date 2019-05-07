@@ -12,7 +12,7 @@ namespace Noughts_And_Crosses.Actions.Spells
 {
     sealed class Armageddon : Spell
     {
-        private new const byte ManaCost = 15;
+        private new const sbyte ManaCost = 15;
 
         public Armageddon(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
@@ -23,16 +23,7 @@ namespace Noughts_And_Crosses.Actions.Spells
         {
             Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("armageddon"));
         }
-
-        public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
-
-        /*
-        public override void Do()
-        {
-            throw new NotImplementedException();
-        }
-        */
-
+        
         public enum TextureType
         {
             Standard
@@ -51,7 +42,7 @@ namespace Noughts_And_Crosses.Actions.Spells
             {
                 grid.Mark = null;
             }
-            Caster.Mana -= ManaCost;
+            Caster.Mana -= (byte)ManaCost;
         }
     }
 }

@@ -21,11 +21,6 @@
             NoughtPlayer = new Player(MarkType.Nought, gameMode, HandleMarkPlaced);
             CurrentPlayer = Game1.Random.Next(0, 2) == 0 ? CrossPlayer : NoughtPlayer;
             Player.Grids = Grids;
-
-            if (gameMode == GameMode.Special)
-            {
-                Explosion.Grids = Grids;
-            }
         }
 
         public enum GameMode
@@ -61,8 +56,6 @@
                 Debug.WriteLine($"{mark} won!");
                 GenerateGrids();
                 Player.Grids = Grids;
-                if (Mode == GameMode.Special)
-                    Explosion.Grids = Grids;
                 //return;
             }
 
@@ -85,9 +78,7 @@
         public void Update(MouseState mouseState, Vector2 cameraLocation, GameTime gameTime)
         {
             Point combinedMouseCamera = mouseState.Position + cameraLocation.ToPoint();
-            CurrentPlayer.Update(combinedMouseCamera, gameTime, mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing);
-            if(mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing)
-                CurrentPlayer.StaticUpdate(mouseState.Position);
+            CurrentPlayer.Update(combinedMouseCamera, mouseState.Position, gameTime, mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing);
         }
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)

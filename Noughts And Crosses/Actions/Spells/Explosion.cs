@@ -12,7 +12,7 @@ namespace Noughts_And_Crosses.Actions.Spells
 {
     sealed class Explosion : Spell, IPlaceAble
     {
-        private new const byte ManaCost = 0;
+        private new const sbyte ManaCost = 0;
 
         public Explosion(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
@@ -34,8 +34,6 @@ namespace Noughts_And_Crosses.Actions.Spells
         private Color MyColor { get; set; } = new Color(255, 255, 255, 0.3f);
         private LogicalPosition Position { get; set; }
         
-        public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
-
         public void Update(GameTime gameTime)
         {
             if(ExplosionStart != TimeSpan.Zero)

@@ -7,7 +7,7 @@
 
     abstract class GameObject
     {
-        protected Rectangle Bounds { get; set; }
+        public Rectangle Bounds { get; set; }
         private readonly Texture2D Texture;
         protected LogicalPosition Position { get; set; }
 

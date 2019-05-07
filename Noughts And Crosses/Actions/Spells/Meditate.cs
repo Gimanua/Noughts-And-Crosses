@@ -10,7 +10,7 @@ namespace Noughts_And_Crosses.Actions
 {
     sealed class Meditate : Spell
     {
-        private new const byte ManaCost = 0;
+        private new const sbyte ManaCost = -1;
 
         public Meditate(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
@@ -44,7 +44,13 @@ namespace Noughts_And_Crosses.Actions
 
         public override void Activate()
         {
-            Caster.Mana += ++TurnsInARow;
+            if (Caster.PreviousAction is Meditate)
+                Caster.Mana += ++TurnsInARow;
+            else
+            {
+                TurnsInARow = 0;
+                Caster.Mana += ++TurnsInARow;
+            }
         }
     }
 }

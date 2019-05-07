@@ -10,7 +10,7 @@ namespace Noughts_And_Crosses.Actions.Spells
 {
     sealed class Destroyer : Spell
     {
-        private new const byte ManaCost = 7;
+        private new const sbyte ManaCost = 7;
 
         public Destroyer(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {

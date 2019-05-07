@@ -2,18 +2,22 @@
 {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using Noughts_And_Crosses.GameObjects;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using static Noughts_And_Crosses.GameObject;
 
     abstract class Action
     {
         public abstract void Activate();
         protected Rectangle Hitbox { get; set; }
-        private Texture2D Texture { get; set; }
+        protected Texture2D Texture { get; set; }
         private Color Color { get; set; }
+        private static Dictionary<LogicalPosition, Grid> grids { get; set; }
 
         public delegate void ActionSelectedEventHandler(Action selectedAction);
         public event ActionSelectedEventHandler ActionSelected;
@@ -26,10 +30,17 @@
             Color = constructionInformation.color;
         }
 
+        protected static ReadOnlyDictionary<LogicalPosition, Grid> Grids { get => new ReadOnlyDictionary<LogicalPosition, Grid>(grids); }
+
+        public static void Initialize(Dictionary<LogicalPosition, Grid> grids)
+        {
+            Action.grids = grids;
+        }
+
         public void Update(Point mousePosition)
         {
             if (Hitbox.Contains(mousePosition))
-                Activate();
+                ActionSelected(this);
         }
 
         public virtual void DrawIcon(SpriteBatch spriteBatch, SpriteFont spriteFont)

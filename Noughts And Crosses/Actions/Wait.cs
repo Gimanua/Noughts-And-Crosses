@@ -40,7 +40,7 @@ namespace Noughts_And_Crosses.Actions
 
         public override void Activate()
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

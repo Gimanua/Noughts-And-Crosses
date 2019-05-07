@@ -31,7 +31,7 @@ namespace Noughts_And_Crosses
         private static RestClient RestClient = new RestClient(QuoteUrl);
         private static string Quote;
         private GameState gameState = GameState.Menu;
-        private PlayField PlayField { get; set; }
+        internal static PlayField PlayField { get; private set; }
         private Vector2 CameraLocation { get; set; }
         private Matrix TransformMatrix { get { return Matrix.CreateTranslation(new Vector3(-CameraLocation, 0)); } }
 
@@ -75,7 +75,7 @@ namespace Noughts_And_Crosses
             */
             
             PlayField = new PlayField(PlayField.GameMode.Special);
-            Explosion.Grids = PlayField.Grids;
+            Action.Initialize(PlayField.Grids);
 
             base.Initialize();
         }
