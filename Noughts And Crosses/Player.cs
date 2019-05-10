@@ -13,11 +13,12 @@
 
     sealed class Player
     {
-        public Player(MarkType mark, GameMode mode, HandleMarkPlaced handleMarkPlaced)
+        public Player(MarkType mark, GameMode mode, HandleMarkPlaced handleMarkPlaced, HandlePlayerTurnEnd handlePlayerTurnEnd)
         {
             Mode = mode;
             Mark = mark;
             MarkPlaced += handleMarkPlaced;
+            PlayerTurnEnd += handlePlayerTurnEnd;
             
             if(mode == GameMode.Special)
             {
@@ -33,11 +34,11 @@
             }
         }
 
-        public delegate void HandleMarkPlaced(MarkType mark, LogicalPosition position);
+        public delegate void HandleMarkPlaced(Player player, LogicalPosition position);
         public event HandleMarkPlaced MarkPlaced;
 
-        //public delegate void HandlePlayerTurnEnd(Player player);
-        //public event HandlePlayerTurnEnd PlayerTurnEnd;
+        public delegate void HandlePlayerTurnEnd(Player player);
+        public event HandlePlayerTurnEnd PlayerTurnEnd;
 
         private GameMode Mode { get; }
         public MarkType Mark { get; }
@@ -65,14 +66,20 @@
                     placeAbleAction.Place(logicalPosition);
                 }
                 SelectedAction.Activate();
+                PreviousAction = SelectedAction;
                 SelectedAction = null;
                 //Avsluta ens tur
+                PlayerTurnEnd(this);
             }
             else if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
             {
+                if (grid.TrappedByPlayer != null && grid.TrappedByPlayer != this)
+                    PlayerTurnEnd(this);
+
                 grid.Mark = new Mark(logicalPosition, Mark);
-                MarkPlaced(Mark, logicalPosition);
+                MarkPlaced(this, logicalPosition);
                 //Avsluta ens tur
+                PlayerTurnEnd(this);
             }
 
             //Om man klickar på en spell/action, välj denna
@@ -111,7 +118,7 @@
         public void HandleActionSelected(Action selectedAction)
         {
             //Kolla så att man valt en ny action
-            if (!selectedAction.Equals(SelectedAction))
+            if (selectedAction != SelectedAction)
                 SelectedAction = selectedAction;
             else
                 SelectedAction = null;

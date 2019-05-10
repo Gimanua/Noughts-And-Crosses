@@ -18,6 +18,7 @@
         protected Texture2D Texture { get; set; }
         private Color Color { get; set; }
         private static Dictionary<LogicalPosition, Grid> grids { get; set; }
+        private static Dictionary<LogicalPosition, Player> trappedGrids { get; set; }
 
         public delegate void ActionSelectedEventHandler(Action selectedAction);
         public event ActionSelectedEventHandler ActionSelected;
@@ -31,10 +32,12 @@
         }
 
         protected static ReadOnlyDictionary<LogicalPosition, Grid> Grids { get => new ReadOnlyDictionary<LogicalPosition, Grid>(grids); }
+        protected static Dictionary<LogicalPosition, Player> TrappedGrids { get { return trappedGrids; } }
 
-        public static void Initialize(Dictionary<LogicalPosition, Grid> grids)
+        public static void Initialize(Dictionary<LogicalPosition, Grid> grids, Dictionary<LogicalPosition, Player> trappedGrids)
         {
             Action.grids = grids;
+            Action.trappedGrids = trappedGrids;
         }
 
         public void Update(Point mousePosition)

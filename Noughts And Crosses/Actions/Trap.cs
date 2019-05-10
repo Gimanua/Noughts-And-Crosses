@@ -33,8 +33,7 @@ namespace Noughts_And_Crosses.Actions
         {
             Standard
         }
-
-        private HashSet<LogicalPosition> TrappedGrids { get; } = new HashSet<LogicalPosition>();
+        
 
         private static (Rectangle bounds, Texture2D texture, Color color) GetConstructionInformation()
         {
@@ -50,7 +49,7 @@ namespace Noughts_And_Crosses.Actions
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
-            foreach(LogicalPosition position in TrappedGrids)
+            foreach(LogicalPosition position in TrappedGrids.Keys)
             {
                 Rectangle gridRect = Grids[position].Bounds;
                 spriteBatch.Draw(Texture, new Rectangle(gridRect.Left + 2, gridRect.Top + 2, gridRect.Width - 4, gridRect.Height - 4), Color.White);
@@ -60,7 +59,7 @@ namespace Noughts_And_Crosses.Actions
         public void Place(LogicalPosition position)
         {
             if (Grids.TryGetValue(position, out Grid grid))
-                TrappedGrids.Add(position);
+                TrappedGrids.Add(position);//TODO Fixa detta ASAP
         }
     }
 }

@@ -17,8 +17,8 @@
         {
             Mode = gameMode;
             GenerateGrids();
-            CrossPlayer = new Player(MarkType.Cross, gameMode, HandleMarkPlaced);
-            NoughtPlayer = new Player(MarkType.Nought, gameMode, HandleMarkPlaced);
+            CrossPlayer = new Player(MarkType.Cross, gameMode, HandleMarkPlaced, HandlePlayerTurnEnd);
+            NoughtPlayer = new Player(MarkType.Nought, gameMode, HandleMarkPlaced, HandlePlayerTurnEnd);
             CurrentPlayer = Game1.Random.Next(0, 2) == 0 ? CrossPlayer : NoughtPlayer;
             Player.Grids = Grids;
         }
@@ -39,6 +39,7 @@
         
         public GameMode Mode { get; }
         public Dictionary<LogicalPosition, Grid> Grids { get; private set; }
+        public Dictionary<LogicalPosition, Player> TrappedGrids { get; set; } = new Dictionary<LogicalPosition, Player>();
         //private MarkType CurrentMark { get; set; } = Game1.Random.Next(0,2) == 0 ? MarkType.Cross : MarkType.Nought;
         private LogicalPosition TopLeft { get; set; }
         private LogicalPosition BottomRight { get; set; }
@@ -48,8 +49,17 @@
         
         public Grid this[LogicalPosition logicalPosition] { get { return Grids[logicalPosition]; } }
 
-        public void HandleMarkPlaced(MarkType mark, LogicalPosition position)
+        public void HandlePlayerTurnEnd(Player player)
         {
+            if (CurrentPlayer.Equals(CrossPlayer))
+                CurrentPlayer = NoughtPlayer;
+            else
+                CurrentPlayer = CrossPlayer;
+        }
+
+        public void HandleMarkPlaced(Player player, LogicalPosition position)
+        {
+            MarkType mark = player.Mark;
             if (CheckForWin(position, mark))
             {
                 //Detta är ju en lite sisådär lösning
@@ -68,11 +78,7 @@
                 for (int i = 0, countTo = 5 - Math.Abs(position.Y - TopLeft.Y); i < countTo; i++) { AddGrids(Side.Up); }
             else if (position.Y + 5 >= BottomRight.Y)
                 for (int i = 0, countTo = 5 - Math.Abs(position.Y - BottomRight.Y); i < countTo; i++) { AddGrids(Side.Down); }
-
-            if (CurrentPlayer.Equals(CrossPlayer))
-                CurrentPlayer = NoughtPlayer;
-            else
-                CurrentPlayer = CrossPlayer;
+            
         }
 
         public void Update(MouseState mouseState, Vector2 cameraLocation, GameTime gameTime)
