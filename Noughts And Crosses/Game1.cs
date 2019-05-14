@@ -59,7 +59,7 @@ namespace Noughts_And_Crosses
             WindowMiddle = new Point(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
             Viewport = GraphicsDevice.Viewport;
             IsMouseVisible = true;
-            /*
+            
             try
             {
                 var request = new RestRequest("/", Method.GET);
@@ -67,15 +67,16 @@ namespace Noughts_And_Crosses
                 string content = response.Content;
                 RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(content);
                 Quote = rootObject.contents.quotes[0].quote;
+                Quote = Quote.Replace('—', ' ');
             }
             catch
             {
 
             }
-            */
+            
             
             PlayField = new PlayField(PlayField.GameMode.Special);
-            Action.Initialize(PlayField.Grids);
+            Action.Initialize(PlayField.Grids, PlayField.TrappedGrids);
 
             base.Initialize();
         }

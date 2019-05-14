@@ -21,6 +21,7 @@
             NoughtPlayer = new Player(MarkType.Nought, gameMode, HandleMarkPlaced, HandlePlayerTurnEnd);
             CurrentPlayer = Game1.Random.Next(0, 2) == 0 ? CrossPlayer : NoughtPlayer;
             Player.Grids = Grids;
+            Player.TrappedGrids = TrappedGrids;
         }
 
         public enum GameMode

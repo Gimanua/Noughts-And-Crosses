@@ -17,7 +17,7 @@ namespace Noughts_And_Crosses.Actions
         }
 
         protected Player Caster { get; }
-        protected sbyte ManaCost { get; }
+        public sbyte ManaCost { get; }
 
         public override void DrawIcon(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {

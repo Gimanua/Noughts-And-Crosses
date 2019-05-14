@@ -25,7 +25,7 @@
                 Actions = new List<Action>
                 {
                     new Meditate(this, HandleActionSelected),
-                    new Trap(HandleActionSelected),
+                    new Trap(HandleActionSelected, this),
                     new Wait(HandleActionSelected),
                     new Explosion(this, HandleActionSelected),
                     new Destroyer(this, HandleActionSelected),
@@ -47,11 +47,31 @@
         public Action PreviousAction { get; private set; }
         private Action SelectedAction { get; set; }
         public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
+        public static Dictionary<LogicalPosition, Player> TrappedGrids { private get; set; }
         public uint Mana { get; set; } = 20;
-        
+
+        private bool Explosion = false;
+        private bool Waiting = false;
+
         public void Update(Point mousePosition, Point staticMousePosition, GameTime gameTime, bool clicking)
         {
             LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mousePosition);
+            
+            if (Explosion)
+            {
+                Explosion explosion = SelectedAction as Explosion;
+                if (explosion.Update(gameTime))
+                {
+                    Explosion = false;
+                    PreviousAction = SelectedAction;
+                    SelectedAction = null;
+                    if (Waiting)
+                        Waiting = false;
+                    else
+                        PlayerTurnEnd(this);
+                }
+                return;
+            }
 
             //Quickfix
             if (!clicking)
@@ -60,33 +80,74 @@
             //Om man klickar på en ruta när man har en selected action.
             if (SelectedAction != null)
             {
+                if(SelectedAction is Wait)
+                {
+                    Waiting = true;
+                    PlayerTurnEnd(this);
+                    PreviousAction = SelectedAction;
+                    SelectedAction = null;
+                    return;
+                }
+                if(SelectedAction is Spell)
+                {
+                    Spell spell = SelectedAction as Spell;
+                    if (spell.ManaCost > Mana)
+                        return;
+                }
                 if (SelectedAction is IPlaceAble)
                 {
                     IPlaceAble placeAbleAction = SelectedAction as IPlaceAble;
                     placeAbleAction.Place(logicalPosition);
                 }
                 SelectedAction.Activate();
+
+                //Vänta på animationen
+                if(SelectedAction is Explosion)
+                {
+                    Explosion = true;
+                    return;
+                }
+
                 PreviousAction = SelectedAction;
                 SelectedAction = null;
                 //Avsluta ens tur
-                PlayerTurnEnd(this);
-            }
-            else if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
-            {
-                if (grid.TrappedByPlayer != null && grid.TrappedByPlayer != this)
+                if (Waiting)
+                    Waiting = false;
+                else
                     PlayerTurnEnd(this);
-
-                grid.Mark = new Mark(logicalPosition, Mark);
-                MarkPlaced(this, logicalPosition);
-                //Avsluta ens tur
-                PlayerTurnEnd(this);
+                return;
             }
 
             //Om man klickar på en spell/action, välj denna
             foreach (Action action in Actions)
             {
-                action.Update(staticMousePosition);
+                if(action.Update(staticMousePosition))
+                    return;
             }
+
+            if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
+            {
+                if (TrappedGrids.TryGetValue(logicalPosition, out Player player) && player != null && player != this)
+                {
+                    TrappedGrids.Remove(logicalPosition);
+                    if (Waiting)
+                        Waiting = false;
+                    else
+                        PlayerTurnEnd(this);
+                    return;
+                }
+                    
+
+                grid.Mark = new Mark(logicalPosition, Mark);
+                MarkPlaced(this, logicalPosition);
+                //Avsluta ens tur
+                if (Waiting)
+                    Waiting = false;
+                else
+                    PlayerTurnEnd(this);
+            }
+
+            
             
         }
 

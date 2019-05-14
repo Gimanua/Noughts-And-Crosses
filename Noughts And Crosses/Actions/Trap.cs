@@ -12,9 +12,10 @@ namespace Noughts_And_Crosses.Actions
 {
     sealed class Trap : Action, IPlaceAble
     {
-        public Trap(ActionSelectedEventHandler actionSelectedEventHandler) : base(GetConstructionInformation(), actionSelectedEventHandler)
-        {
 
+        public Trap(ActionSelectedEventHandler actionSelectedEventHandler, Player placer) : base(GetConstructionInformation(), actionSelectedEventHandler)
+        {
+            Placer = placer;
         }
 
         /*
@@ -34,6 +35,7 @@ namespace Noughts_And_Crosses.Actions
             Standard
         }
         
+        public Player Placer { get; }
 
         private static (Rectangle bounds, Texture2D texture, Color color) GetConstructionInformation()
         {
@@ -49,17 +51,19 @@ namespace Noughts_And_Crosses.Actions
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
-            foreach(LogicalPosition position in TrappedGrids.Keys)
+            foreach(var kvp in TrappedGrids)
             {
-                Rectangle gridRect = Grids[position].Bounds;
+                if (kvp.Value != Placer)
+                    continue;
+                Rectangle gridRect = Grids[kvp.Key].Bounds;
                 spriteBatch.Draw(Texture, new Rectangle(gridRect.Left + 2, gridRect.Top + 2, gridRect.Width - 4, gridRect.Height - 4), Color.White);
             }
         }
 
         public void Place(LogicalPosition position)
         {
-            if (Grids.TryGetValue(position, out Grid grid))
-                TrappedGrids.Add(position);//TODO Fixa detta ASAP
+            if (Grids.ContainsKey(position))
+                TrappedGrids.Add(position, Placer);//TODO Fixa detta ASAP
         }
     }
 }

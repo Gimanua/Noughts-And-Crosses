@@ -7,7 +7,6 @@
     sealed class Grid : GameObject
     {
         public Mark Mark { get; set; }
-        public Player TrappedByPlayer { get; set; }
         
         public Grid(LogicalPosition position) : base(GetTuple(position))
         {

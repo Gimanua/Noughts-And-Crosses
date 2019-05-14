@@ -16,7 +16,7 @@ namespace Noughts_And_Crosses.Actions.Spells
 
         public Explosion(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
         {
-
+            Placer = caster;
         }
 
         static Explosion()
@@ -31,31 +31,29 @@ namespace Noughts_And_Crosses.Actions.Spells
 
         private TimeSpan ExplosionStart { get; set; } = TimeSpan.Zero;
         private List<LogicalPosition> ExplosionPositions { get; set; } = new List<LogicalPosition>();
-        private Color MyColor { get; set; } = new Color(255, 255, 255, 0.3f);
+        private Color MyColor { get; set; } = new Color(255, 255, 255, 255);
         private LogicalPosition Position { get; set; }
+        public Player Placer { get; }
         
-        public void Update(GameTime gameTime)
+        public bool Update(GameTime gameTime)
         {
-            if(ExplosionStart != TimeSpan.Zero)
+            if (ExplosionStart != TimeSpan.Zero)
             {
                 double elapsedSeconds = (gameTime.TotalGameTime - ExplosionStart).TotalSeconds;
 
-                if (elapsedSeconds <= 0.15)
+                if (elapsedSeconds <= 2.15)
                 {
-                    MyColor = new Color(255, 255, 255, Math.Max((float)elapsedSeconds / 0.15f, 0.3f));
+                    return false;
                 }
-                else if(elapsedSeconds > 1.1 && elapsedSeconds <= 4.5)
+                else
                 {
-                    int alpha = (int)(255 * (1 - elapsedSeconds / 3.4));
-                    if(alpha < 16)
-                    {
-                        ExplosionPositions.Clear();
-                        ExplosionStart = TimeSpan.Zero;
-                        return;
-                    }
-                    MyColor = new Color(255, 255, 255, alpha);
+                    ExplosionPositions.Clear();
+                    ExplosionStart = TimeSpan.Zero;
+                    return true;
                 }
             }
+            else
+                return true;
         }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)

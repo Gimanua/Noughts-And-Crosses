@@ -10,5 +10,6 @@ namespace Noughts_And_Crosses
     interface IPlaceAble
     {
         void Place(LogicalPosition position);
+        Player Placer { get; }
     }
 }

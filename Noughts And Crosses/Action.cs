@@ -40,10 +40,14 @@
             Action.trappedGrids = trappedGrids;
         }
 
-        public void Update(Point mousePosition)
+        public bool Update(Point mousePosition)
         {
             if (Hitbox.Contains(mousePosition))
+            {
                 ActionSelected(this);
+                return true;
+            }
+            return false;
         }
 
         public virtual void DrawIcon(SpriteBatch spriteBatch, SpriteFont spriteFont)
