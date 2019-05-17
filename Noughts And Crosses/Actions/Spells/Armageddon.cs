@@ -14,7 +14,7 @@ namespace Noughts_And_Crosses.Actions.Spells
     {
         private new const sbyte ManaCost = 15;
 
-        public Armageddon(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
+        public Armageddon(Player caster, ActionPerformedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler, caster)
         {
 
         }

@@ -10,7 +10,7 @@ namespace Noughts_And_Crosses.Actions
 {
     abstract class Spell : Action
     {
-        public Spell(Player caster, sbyte manaCost, (Rectangle bounds, Texture2D texture, Color color) constructionInformation, ActionSelectedEventHandler actionSelectedEventHandler) : base(constructionInformation, actionSelectedEventHandler)
+        public Spell(Player caster, sbyte manaCost, (Rectangle bounds, Texture2D texture, Color color) constructionInformation, ActionPerformedEventHandler actionSelectedEventHandler, Player performer) : base(constructionInformation, actionSelectedEventHandler, performer)
         {
             Caster = caster;
             ManaCost = manaCost;

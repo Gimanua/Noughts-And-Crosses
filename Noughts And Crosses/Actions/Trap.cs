@@ -13,7 +13,7 @@ namespace Noughts_And_Crosses.Actions
     sealed class Trap : Action, IPlaceAble
     {
 
-        public Trap(ActionSelectedEventHandler actionSelectedEventHandler, Player placer) : base(GetConstructionInformation(), actionSelectedEventHandler)
+        public Trap(ActionPerformedEventHandler actionSelectedEventHandler, Player placer) : base(GetConstructionInformation(), actionSelectedEventHandler, placer)
         {
             Placer = placer;
         }

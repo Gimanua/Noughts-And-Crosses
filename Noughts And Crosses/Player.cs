@@ -24,12 +24,12 @@
             {
                 Actions = new List<Action>
                 {
-                    new Meditate(this, HandleActionSelected),
-                    new Trap(HandleActionSelected, this),
-                    new Wait(HandleActionSelected),
-                    new Explosion(this, HandleActionSelected),
-                    new Destroyer(this, HandleActionSelected),
-                    new Armageddon(this, HandleActionSelected)
+                    new Meditate(this, HandleActionPerformed),
+                    new Trap(HandleActionPerformed, this),
+                    new Wait(HandleActionPerformed, this),
+                    new Explosion(this, HandleActionPerformed),
+                    new Destroyer(this, HandleActionPerformed),
+                    new Armageddon(this, HandleActionPerformed)
                 };
             }
         }
@@ -39,7 +39,7 @@
 
         public delegate void HandlePlayerTurnEnd(Player player);
         public event HandlePlayerTurnEnd PlayerTurnEnd;
-
+        
         private GameMode Mode { get; }
         public MarkType Mark { get; }
         public List<Action> Actions { get; }
@@ -49,14 +49,25 @@
         public static Dictionary<LogicalPosition, Grid> Grids { private get; set; }
         public static Dictionary<LogicalPosition, Player> TrappedGrids { private get; set; }
         public uint Mana { get; set; } = 20;
+        
+        private bool ActionPerformed = false;
+        public bool Waiting = false;
+        public bool WaitingForAnimation = false;
 
-        private bool Explosion = false;
-        private bool Waiting = false;
-
-        public void Update(Point mousePosition, Point staticMousePosition, GameTime gameTime, bool clicking)
+        public void Update(Point mousePosition, Point mouseOffset, GameTime gameTime, MouseState mouseState)
         {
-            LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mousePosition);
+            if (mouseState.LeftButton != ButtonState.Pressed || Game1.AlreadyPressing)
+                return;
+
+            if (WaitingForAnimation)
+            {
+                (SelectedAction as Explosion).Update(gameTime);
+                return;
+            }
+
+            LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mousePosition + mouseOffset);
             
+            /*
             if (Explosion)
             {
                 Explosion explosion = SelectedAction as Explosion;
@@ -72,12 +83,10 @@
                 }
                 return;
             }
-
-            //Quickfix
-            if (!clicking)
-                return;
+            */
 
             //Om man klickar på en ruta när man har en selected action.
+            /*
             if (SelectedAction != null)
             {
                 if(SelectedAction is Wait)
@@ -117,12 +126,20 @@
                     PlayerTurnEnd(this);
                 return;
             }
-
-            //Om man klickar på en spell/action, välj denna
+            */
+            
             foreach (Action action in Actions)
             {
-                if(action.Update(staticMousePosition))
+                action.Update(mousePosition, mouseOffset);
+                if (action.Selected)
                     return;
+            }
+
+            //Kolla ifall någon av actionsen utlöstes, ActionPerformed sätts till true via event-handlern HandleActionPerformed
+            if (ActionPerformed)
+            {
+                ActionPerformed = false;
+                return;
             }
 
             if (Grids.TryGetValue(logicalPosition, out Grid grid) && grid.Mark == null)
@@ -136,8 +153,7 @@
                         PlayerTurnEnd(this);
                     return;
                 }
-                    
-
+                
                 grid.Mark = new Mark(logicalPosition, Mark);
                 MarkPlaced(this, logicalPosition);
                 //Avsluta ens tur
@@ -146,9 +162,6 @@
                 else
                     PlayerTurnEnd(this);
             }
-
-            
-            
         }
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
@@ -173,16 +186,22 @@
             }
             spriteBatch.DrawString(spriteFont, $"Current mana: {Mana.ToString()}", new Vector2(10, 10), Color.BlueViolet);
             spriteBatch.DrawString(spriteFont, $"Current player: {Mark.ToString()}", new Vector2(10, 30), Color.Red);
-            spriteBatch.DrawString(spriteFont, $"Selected action: { SelectedAction?.ToString() }", new Vector2(10, 50), Color.Bisque);
+            //spriteBatch.DrawString(spriteFont, $"Selected action: { SelectedAction?.ToString() }", new Vector2(10, 50), Color.Bisque);
         }
 
-        public void HandleActionSelected(Action selectedAction)
+        public void HandleActionPerformed(Action performedAction)
         {
-            //Kolla så att man valt en ny action
-            if (selectedAction != SelectedAction)
-                SelectedAction = selectedAction;
+            ActionPerformed = true;
+            if (Waiting)
+            {
+                Waiting = false;
+            }
             else
-                SelectedAction = null;
+            {
+                PreviousAction = SelectedAction;
+                SelectedAction = performedAction;
+                PlayerTurnEnd(this);
+            }
         }
         
     }

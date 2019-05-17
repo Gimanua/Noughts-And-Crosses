@@ -12,7 +12,7 @@ namespace Noughts_And_Crosses.Actions.Spells
     {
         private new const sbyte ManaCost = 7;
 
-        public Destroyer(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
+        public Destroyer(Player caster, ActionPerformedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler, caster)
         {
 
         }
@@ -21,12 +21,6 @@ namespace Noughts_And_Crosses.Actions.Spells
         {
             Game1.Textures.Add(TextureType.Standard, Game1.Content.Load<Texture2D>("destroyer"));
         }
-        /*
-        public override void Do()
-        {
-            throw new NotImplementedException();
-        }
-        */
 
         public enum TextureType
         {
@@ -42,7 +36,7 @@ namespace Noughts_And_Crosses.Actions.Spells
 
         public override void Activate()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

@@ -84,8 +84,8 @@
 
         public void Update(MouseState mouseState, Vector2 cameraLocation, GameTime gameTime)
         {
-            Point combinedMouseCamera = mouseState.Position + cameraLocation.ToPoint();
-            CurrentPlayer.Update(combinedMouseCamera, mouseState.Position, gameTime, mouseState.LeftButton == ButtonState.Pressed && !Game1.AlreadyPressing);
+            //Point combinedMouseCamera = mouseState.Position + cameraLocation.ToPoint();
+            CurrentPlayer.Update(mouseState.Position, cameraLocation.ToPoint(), gameTime, mouseState);
         }
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)

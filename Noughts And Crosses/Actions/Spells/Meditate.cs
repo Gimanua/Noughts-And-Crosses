@@ -12,7 +12,7 @@ namespace Noughts_And_Crosses.Actions
     {
         private new const sbyte ManaCost = -1;
 
-        public Meditate(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
+        public Meditate(Player caster, ActionPerformedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler, caster)
         {
 
         }

@@ -10,7 +10,7 @@ namespace Noughts_And_Crosses.Actions
 {
     sealed class Wait : Action
     {
-        public Wait(ActionSelectedEventHandler actionSelectedEventHandler) : base(GetConstructionInformation(), actionSelectedEventHandler)
+        public Wait(ActionPerformedEventHandler actionSelectedEventHandler, Player performer) : base(GetConstructionInformation(), actionSelectedEventHandler, performer)
         {
 
         }
@@ -40,7 +40,7 @@ namespace Noughts_And_Crosses.Actions
 
         public override void Activate()
         {
-            return;
+            Performer.Waiting = true;
         }
     }
 }

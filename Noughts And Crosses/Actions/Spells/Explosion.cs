@@ -14,7 +14,7 @@ namespace Noughts_And_Crosses.Actions.Spells
     {
         private new const sbyte ManaCost = 0;
 
-        public Explosion(Player caster, ActionSelectedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler)
+        public Explosion(Player caster, ActionPerformedEventHandler actionSelectedEventHandler) : base(caster, ManaCost, GetConstructionInformation(), actionSelectedEventHandler, caster)
         {
             Placer = caster;
         }
@@ -35,7 +35,7 @@ namespace Noughts_And_Crosses.Actions.Spells
         private LogicalPosition Position { get; set; }
         public Player Placer { get; }
         
-        public bool Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             if (ExplosionStart != TimeSpan.Zero)
             {
@@ -43,17 +43,17 @@ namespace Noughts_And_Crosses.Actions.Spells
 
                 if (elapsedSeconds <= 2.15)
                 {
-                    return false;
+                    Performer.WaitingForAnimation = true;
                 }
                 else
                 {
                     ExplosionPositions.Clear();
                     ExplosionStart = TimeSpan.Zero;
-                    return true;
+                    Performer.WaitingForAnimation = false;
                 }
             }
             else
-                return true;
+                Performer.WaitingForAnimation = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
@@ -66,6 +66,7 @@ namespace Noughts_And_Crosses.Actions.Spells
         
         public override void Activate()
         {
+            Performer.WaitingForAnimation = true;
             ExplosionStart = Game1.GameTime.TotalGameTime;
             HashSet<LogicalPosition> visited = new HashSet<LogicalPosition>();
             Queue<LogicalPosition> pending = new Queue<LogicalPosition>();
