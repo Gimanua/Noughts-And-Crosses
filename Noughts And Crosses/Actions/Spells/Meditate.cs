@@ -16,12 +16,6 @@ namespace Noughts_And_Crosses.Actions
         {
 
         }
-        /*
-        public override void Do()
-        {
-            throw new NotImplementedException();
-        }
-        */
 
         static Meditate()
         {

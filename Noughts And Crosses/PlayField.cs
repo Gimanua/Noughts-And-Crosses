@@ -63,7 +63,7 @@
             MarkType mark = player.Mark;
             if (CheckForWin(position, mark))
             {
-                //Detta är ju en lite sisådär lösning
+                SaveHandler.Save(this);
                 Debug.WriteLine($"{mark} won!");
                 GenerateGrids();
                 Player.Grids = Grids;

@@ -67,67 +67,6 @@
 
             LogicalPosition logicalPosition = LogicalPosition.GetLogicalPosition(mousePosition + mouseOffset);
             
-            /*
-            if (Explosion)
-            {
-                Explosion explosion = SelectedAction as Explosion;
-                if (explosion.Update(gameTime))
-                {
-                    Explosion = false;
-                    PreviousAction = SelectedAction;
-                    SelectedAction = null;
-                    if (Waiting)
-                        Waiting = false;
-                    else
-                        PlayerTurnEnd(this);
-                }
-                return;
-            }
-            */
-
-            //Om man klickar på en ruta när man har en selected action.
-            /*
-            if (SelectedAction != null)
-            {
-                if(SelectedAction is Wait)
-                {
-                    Waiting = true;
-                    PlayerTurnEnd(this);
-                    PreviousAction = SelectedAction;
-                    SelectedAction = null;
-                    return;
-                }
-                if(SelectedAction is Spell)
-                {
-                    Spell spell = SelectedAction as Spell;
-                    if (spell.ManaCost > Mana)
-                        return;
-                }
-                if (SelectedAction is IPlaceAble)
-                {
-                    IPlaceAble placeAbleAction = SelectedAction as IPlaceAble;
-                    placeAbleAction.Place(logicalPosition);
-                }
-                SelectedAction.Activate();
-
-                //Vänta på animationen
-                if(SelectedAction is Explosion)
-                {
-                    Explosion = true;
-                    return;
-                }
-
-                PreviousAction = SelectedAction;
-                SelectedAction = null;
-                //Avsluta ens tur
-                if (Waiting)
-                    Waiting = false;
-                else
-                    PlayerTurnEnd(this);
-                return;
-            }
-            */
-            
             foreach (Action action in Actions)
             {
                 action.Update(mousePosition, mouseOffset);
